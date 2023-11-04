@@ -5,10 +5,13 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Date;
+import java.sql.Time;
+
 
 public class WolfParkingApplication {
 
-    static final String       jdbcURL    = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/oapatel2";
+    static final String       jdbcURL    = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/stithi";
 
     private static Connection connection = null;
     private static Statement  statement  = null;
@@ -274,65 +277,189 @@ public class WolfParkingApplication {
      *
      **/
 
+    // Task and operations 3: Generating and maintaining citations
+    /**
+     * Creates a new Citation entry with the given citation information.
+     * @param CitationDate  
+     *              the date when the citation is created
+     * @param Fee fee 
+     *              ($25 for category “Invalid Permit,” 
+     *              $30 for category “Expired Permit,” 
+     *              $40 for category “No Permit”, 
+     *              but handicap users will receive a 50% discount on all citation fees)
+     * @param PaymentStatus 
+     *              the status (if the driver has paid for the citation) of the citation to be created
+     *              values can be {paid, unpaid}, which can be updated by a payment procedure
+     * @param CitationTime  
+     *              the date when the citation is created
+     * @param CitationNumber 
+     *              the number of the Citation to be created
+     * @param Category 
+     *              the category of the Citation to be created
+     * @param LotName 
+     *              the name of the parking lot where the vehicle relevant to the citation exists
+     * @param LicenseNum 
+     *              the license number of the vehicle relevant to the citation
+     */
+    public static void enterCitation (final Date CitationDate, final double Fee, final String PaymentStatus, final Time CitationTime, final int CitationNumber, final String Category, final String LotName, final String LicenseNum) {
+        try {
+            // Insert entry into Citation table
+            statement.executeUpdate( "INSERT INTO Citation (CitationDate, Fee, PaymentStatus, CitationTime, CitationNumber, Category, LotName, LicenseNum) VALUES ("
+                    + CitationDate + "," + Fee + "," + PaymentStatus + "," + CitationTime + "," + CitationNumber + "," + Category + "," + LotName + "," + LicenseNum + ");" );
+
+        }
+        catch ( SQLException e ) {
+            System.out.println( "Error message" );
+        }
+    }
+
+    /**
+     * Updates an existing Citation entry with the given citation category and fee
+     *
+     * @param CitationNumber
+     *            the ID of the citation to be updated
+     * @param Category
+     *            the new category for the updated citation entry
+     * @param Fee
+     *            the new fee for the updated citation entry
+     */
+    public static void updateCitation ( final int CitationNumber, final String Category, final double Fee ) {
+        try {
+            // Updating Citation entry with existing CitationNumber
+            statement.executeUpdate( "Update Citation SET Fee = " + Fee + ", Category = " + Category + " WHERE CitationNumber = " + CitationNumber + ";" );
+        }
+        catch ( SQLException e ) {
+            System.out.println( "Error message" );
+        }
+    }
+
+    /**
+     * Deletes the Citation entry with the matching CitationNumber.
+     *
+     * @param CitationNumber
+     *            the number of the Citation to be deleted
+    */
+    public static void deleteCitation ( final int CitationNumber ) {
+        try {
+            // Delete entry from Citation table with matching CitationNumber
+            statement.executeUpdate( "DELETE FROM Citation WHERE CitationNumber =" + CitationNumber + ";" );
+        }
+        catch ( SQLException e ) {
+            System.out.println( "Error message" );
+        }
+    }
+
+    /**
+     * Checks if a vehicle has a valid permit
+     * @param LotName
+     *      the name of the parking lot where the vehicle relevant to the citation exists
+     * @param LicenseNum
+     *      the license number of the vehicle relevant to the citation
+     * @param ExpDate
+     *      the date when the permit will expire
+     * @param ExpTime
+     *      the time of the day when the permit will expire
+     */
+    public static void checkParkingViolation (final String LotName, final String LicenseNum, final Date ExpDate, final Time ExpTime) {
+        try {
+            // Get permit id from Permit table with matching LicenseNum
+            statement.executeUpdate( "SELECT PermitID FROM Permit WHERE LicenseNum = " + LicenseNum + " AND LotName = " + LotName + " AND ExpDate >= " + ExpDate + "  AND ExpTime >= " + ExpTime + ";" );
+        }
+        catch ( SQLException e ) {
+            System.out.println( "Error message" );
+        }
+    }
+
+    /**
+     * Updates Fee as 0 and Payment status as "Paid" in Citation table for a given CitationNumber
+     * @param CitationNumber
+     *      the number of the Citation to be created
+     */
+    public static void payCitation (final int CitationNumber) {
+        try {
+            // Updating Citation entry with existing CitationNumber
+            statement.executeUpdate( "Update Citation SET Fee =  0 AND PaymentStatus = Paid" + " WHERE CitationNumber = " + CitationNumber + ";" );
+        }
+        catch ( SQLException e ) {
+            System.out.println( "Error message" );
+        }
+    }
+
+    /**
+     * Updates Fee as 0 and Payment status as "In Appeal" in Citation table for a given CitationNumber
+     * @param CitationNumber
+     *      the number of the Citation to be created
+     */
+    public static void requestAppeal (final int CitationNumber) {
+        try {
+            // Updating Citation entry with existing CitationNumber
+            statement.executeUpdate( "Update Citation SET Fee =  0 AND PaymentStatus = In Appeal" + " WHERE CitationNumber = " + CitationNumber + ";" );
+        }
+        catch ( SQLException e ) {
+            System.out.println( "Error message" );
+        }
+    }
+
+
     private static void initialize () {
         try {
             connectToDatabase();
 
-            // Creating Security table
-            statement.executeUpdate(
-                    "CREATE TABLE Security (" + "    SecurityID INTEGER," + "    PRIMARY KEY (SecurityID)" + ");" );
+            // // Creating Security table
+            // statement.executeUpdate(
+            //         "CREATE TABLE Security (" + "    SecurityID INTEGER," + "    PRIMARY KEY (SecurityID)" + ");" );
 
-            // Creating Driver table
-            statement.executeUpdate(
-                    "CREATE TABLE Driver (" + "    DriverID VARCHAR(20) NOT NULL," + "    Name VARCHAR(36) NOT NULL,"
-                            + "    Status VARCHAR(1) NOT NULL," + "    PRIMARY KEY (DriverID)" + ");" );
+            // // Creating Driver table
+            // statement.executeUpdate(
+            //         "CREATE TABLE Driver (" + "    DriverID VARCHAR(20) NOT NULL," + "    Name VARCHAR(36) NOT NULL,"
+            //                 + "    Status VARCHAR(1) NOT NULL," + "    PRIMARY KEY (DriverID)" + ");" );
 
-            // Creating ParkingLot table
-            statement.executeUpdate( "CREATE TABLE ParkingLot (" + "    LotName VARCHAR(128) NOT NULL,"
-                    + "    Address VARCHAR(128) NOT NULL," + "    PRIMARY KEY (LotName)" + ");" );
+            // // Creating ParkingLot table
+            // statement.executeUpdate( "CREATE TABLE ParkingLot (" + "    LotName VARCHAR(128) NOT NULL,"
+            //         + "    Address VARCHAR(128) NOT NULL," + "    PRIMARY KEY (LotName)" + ");" );
 
-            // Creating Vehicle table
-            statement.executeUpdate( "CREATE TABLE Vehicle (" + "    LicenseNum VARCHAR(128) NOT NULL,"
-                    + "    Year VARCHAR(4)," + "    Model VARCHAR(20)," + "    Color VARCHAR(20),"
-                    + "    Manf VARCHAR(20)," + "    PRIMARY KEY (LicenseNum)" + ");" );
+            // // Creating Vehicle table
+            // statement.executeUpdate( "CREATE TABLE Vehicle (" + "    LicenseNum VARCHAR(128) NOT NULL,"
+            //         + "    Year VARCHAR(4)," + "    Model VARCHAR(20)," + "    Color VARCHAR(20),"
+            //         + "    Manf VARCHAR(20)," + "    PRIMARY KEY (LicenseNum)" + ");" );
 
-            // Creating Zone table
-            statement.executeUpdate( "CREATE TABLE Zone (" + "    ZoneID VARCHAR(2) NOT NULL,"
-                    + "    LotName VARCHAR(128) NOT NULL," + "    PRIMARY KEY (ZoneID, LotName),"
-                    + "    FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON UPDATE CASCADE" + ");" );
+            // // Creating Zone table
+            // statement.executeUpdate( "CREATE TABLE Zone (" + "    ZoneID VARCHAR(2) NOT NULL,"
+            //         + "    LotName VARCHAR(128) NOT NULL," + "    PRIMARY KEY (ZoneID, LotName),"
+            //         + "    FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON UPDATE CASCADE" + ");" );
 
-            // Creating Space table
-            statement.executeUpdate( "CREATE TABLE Space (" + "    SpaceNumber INTEGER NOT NULL,"
-                    + "    LotName VARCHAR(128) NOT NULL," + "    SpaceType VARCHAR(20) NOT NULL,"
-                    + "    AvailabilityStatus VARCHAR(20) NOT NULL," + "    PRIMARY KEY (SpaceNumber, LotName),"
-                    + "    FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON UPDATE CASCADE" + ");" );
+            // // Creating Space table
+            // statement.executeUpdate( "CREATE TABLE Space (" + "    SpaceNumber INTEGER NOT NULL,"
+            //         + "    LotName VARCHAR(128) NOT NULL," + "    SpaceType VARCHAR(20) NOT NULL,"
+            //         + "    AvailabilityStatus VARCHAR(20) NOT NULL," + "    PRIMARY KEY (SpaceNumber, LotName),"
+            //         + "    FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON UPDATE CASCADE" + ");" );
 
-            // Creating Permit table
-            statement.executeUpdate( "CREATE TABLE Permit (" + "    PermitID INTEGER NOT NULL,"
-                    + "    DriverID VARCHAR(20) NOT NULL,    LicenseNum VARCHAR(20) NOT NULL,  ZoneID VARCHAR(2) NOT NULL, LotName VARCHAR(20),"
-                    + "    StartDate DATE NOT NULL," + "    ExpDate DATE NOT NULL," + "    ExpTime TIME NOT NULL,"
-                    + "    SpaceType VARCHAR(20) NOT NULL," + "    PermitType VARCHAR(20) NOT NULL,"
-                    + "    PRIMARY KEY (PermitID),"
-                    + "    FOREIGN KEY(DriverID) REFERENCES Driver (DriverID) ON UPDATE CASCADE ON DELETE CASCADE,"
-                    + "    FOREIGN KEY(LicenseNum) REFERENCES Vehicle (LicenseNum) ON UPDATE CASCADE ON DELETE CASCADE,"
-                    + "    FOREIGN KEY(ZoneID) REFERENCES Zone (ZoneID) ON UPDATE CASCADE ON DELETE CASCADE,"
-                    + "    FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON UPDATE CASCADE ON DELETE CASCADE"
-                    + ");" );
+            // // Creating Permit table
+            // statement.executeUpdate( "CREATE TABLE Permit (" + "    PermitID INTEGER NOT NULL,"
+            //         + "    DriverID VARCHAR(20) NOT NULL,    LicenseNum VARCHAR(20) NOT NULL,  ZoneID VARCHAR(2) NOT NULL, LotName VARCHAR(20),"
+            //         + "    StartDate DATE NOT NULL," + "    ExpDate DATE NOT NULL," + "    ExpTime TIME NOT NULL,"
+            //         + "    SpaceType VARCHAR(20) NOT NULL," + "    PermitType VARCHAR(20) NOT NULL,"
+            //         + "    PRIMARY KEY (PermitID),"
+            //         + "    FOREIGN KEY(DriverID) REFERENCES Driver (DriverID) ON UPDATE CASCADE ON DELETE CASCADE,"
+            //         + "    FOREIGN KEY(LicenseNum) REFERENCES Vehicle (LicenseNum) ON UPDATE CASCADE ON DELETE CASCADE,"
+            //         + "    FOREIGN KEY(ZoneID) REFERENCES Zone (ZoneID) ON UPDATE CASCADE ON DELETE CASCADE,"
+            //         + "    FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON UPDATE CASCADE ON DELETE CASCADE"
+            //         + ");" );
 
-            // Creating Citation table
-            statement.executeUpdate( "CREATE TABLE Citation ("
-                    + "CitationNumber INTEGER NOT NULL, LotName VARCHAR(128) NOT NULL, LicenseNum VARCHAR(128) NOT NULL,"
-                    + "CitationDate DATE NOT NULL, Fee DOUBLE,"
-                    + "PaymentStatus VARCHAR(32) NOT NULL, CitationTime TIME NOT NULL,"
-                    + "Category VARCHAR(128) NOT NULL, PRIMARY KEY(CitationNumber),"
-                    + "FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON UPDATE CASCADE,"
-                    + "FOREIGN KEY(LicenseNum) REFERENCES Vehicle (LicenseNum) ON UPDATE CASCADE" + ");" );
+            // // Creating Citation table
+            // statement.executeUpdate( "CREATE TABLE Citation ("
+            //         + "CitationNumber INTEGER NOT NULL, LotName VARCHAR(128) NOT NULL, LicenseNum VARCHAR(128) NOT NULL,"
+            //         + "CitationDate DATE NOT NULL, Fee DOUBLE,"
+            //         + "PaymentStatus VARCHAR(32) NOT NULL, CitationTime TIME NOT NULL,"
+            //         + "Category VARCHAR(128) NOT NULL, PRIMARY KEY(CitationNumber),"
+            //         + "FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON UPDATE CASCADE,"
+            //         + "FOREIGN KEY(LicenseNum) REFERENCES Vehicle (LicenseNum) ON UPDATE CASCADE" + ");" );
 
-            // Creating Maintain table
-            statement.executeUpdate( "CREATE TABLE Maintain (" + "    CitationNumber INTEGER NOT NULL,"
-                    + "    SecurityID INTEGER NOT NULL," + "    PRIMARY KEY (CitationNumber, SecurityID),"
-                    + "    FOREIGN KEY(CitationNumber) REFERENCES Citation (CitationNumber) ON UPDATE CASCADE,"
-                    + "    FOREIGN KEY(SecurityID) REFERENCES Security (SecurityID) ON UPDATE CASCADE" + ");" );
+            // // Creating Maintain table
+            // statement.executeUpdate( "CREATE TABLE Maintain (" + "    CitationNumber INTEGER NOT NULL,"
+            //         + "    SecurityID INTEGER NOT NULL," + "    PRIMARY KEY (CitationNumber, SecurityID),"
+            //         + "    FOREIGN KEY(CitationNumber) REFERENCES Citation (CitationNumber) ON UPDATE CASCADE,"
+            //         + "    FOREIGN KEY(SecurityID) REFERENCES Security (SecurityID) ON UPDATE CASCADE" + ");" );
 
         }
         catch ( ClassNotFoundException e ) {
@@ -346,8 +473,8 @@ public class WolfParkingApplication {
     private static void connectToDatabase () throws ClassNotFoundException, SQLException {
         Class.forName( "org.mariadb.jdbc.Driver" );
 
-        String user = "oapatel2";
-        String password = "200404428";
+        String user = "stithi";
+        String password = "200475434";
 
         connection = DriverManager.getConnection( jdbcURL, user, password );
         statement = connection.createStatement();
