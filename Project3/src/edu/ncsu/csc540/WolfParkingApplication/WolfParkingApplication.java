@@ -469,9 +469,9 @@ public class WolfParkingApplication {
 	 * Creates a new Citation entry with the given citation information.
 	 * 
 	 * @param CitationDate   the date when the citation is created
-	 * @param Fee            fee ($25 for category ‚ÄúInvalid Permit,‚Äù $30 for
-	 *                       category ‚ÄúExpired Permit,‚Äù $40 for category ‚ÄúNo
-	 *                       Permit‚Äù, but handicap users will receive a 50% discount
+	 * @param Fee            fee ($25 for category ìInvalid Permit,î $30 for
+	 *                       category ìExpired Permit,î $40 for category ìNo
+	 *                       Permitî, but handicap users will receive a 50% discount
 	 *                       on all citation fees)
 	 * @param PaymentStatus  the status (if the driver has paid for the citation) of
 	 *                       the citation to be created values can be {paid,
@@ -580,6 +580,77 @@ public class WolfParkingApplication {
 					+ " WHERE CitationNumber = " + CitationNumber + ";");
 		} catch (SQLException e) {
 			System.out.println("Error message");
+		}
+	}
+
+	// Task and operations 4: Reports
+
+	/**
+	 * Returns a table titled TotalCitations with the name of the parking lot and
+	 * the associated number of citation for each lot within a given time frame
+	 * 
+	 * @param LotName   the name of the parking lot
+	 * @param StartDate the earliest the citation was given
+	 * @param EndDate   the latest the citation was given
+	 */
+	public static void getCitationReportByTime(final String LotName, final String StartDate, final String EndDate) {
+		try {
+
+		} catch (SQLException e) {
+
+		}
+	}
+
+	/**
+	 * Return a list of zones in a given Parking Lot
+	 * 
+	 * @param LotName the name of the parking lot
+	 */
+	public static void getZones(final String LotName) {
+		try {
+
+		} catch (SQLException e) {
+
+		}
+	}
+
+	/**
+	 * Gets the number of people who have not paid their citation
+	 */
+	public static void getCurrentViolation() {
+
+	}
+
+	/**
+	 * Gets the amount of employees
+	 */
+	public static void getEmployeeZone() {
+
+	}
+
+	/**
+	 * Gets the permit associated with a particular driver
+	 * 
+	 * @param DriverId the id of the driver to get their permit info
+	 */
+	public static void getPermitInformation(final String DriverId) {
+		try {
+
+		} catch (SQLException e) {
+
+		}
+	}
+
+	/**
+	 * Gets the number of available spaces withing a particular Parking Lot
+	 * 
+	 * @param LotName the name of the lot to find the number of available spaces for
+	 */
+	public static void getAvailableSpaces(final String LotName) {
+		try {
+
+		} catch (SQLException e) {
+
 		}
 	}
 
