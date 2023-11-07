@@ -298,41 +298,158 @@ public class WolfParkingApplication {
 		}
 
 	}
-	
-		// CAN YOU UPDATE PRIMARY KEYS?
-		/**
-		 * Updates an existing zone entry with the given parking lot name
-		 *
-		 * @param zoneID  the ID of the zone to be updated
-		 * @param lotName the new parking lot where the existing zone will exist ins
-		 */
-		public static void updatePermit(final String permitID, final String spaceType, final String startDate,
-				final String expDate, final String driverID, final String permitType, final String expTime,
-				final String licenseNum, final String zoneID, final String lotName) {
-			
-			// can you update the primary keys
-			try {
-				statement.executeUpdate("UPDATE Zone SET LotName=" + lotName + "WHERE ZoneID =" + zoneID + ";");
-			} catch (SQLException e) {
-				System.out.println("Error message");
-			}
-			// finish
-		
+
+	// CAN YOU UPDATE PRIMARY KEYS?
+	/**
+	 * Updates an existing permit with the permit id, space type, start date,
+	 * expiration date, driver id, permit type, expiration time, license number,
+	 * zone id, or the lot name.
+	 *
+	 * @param permitID   ID of the permit
+	 * @param spaceType  type of the space for the permit
+	 * @param startDate  start date of the permit
+	 * @param expDate    expiration date of the permit
+	 * @param driverID   ID of the driver of the permit
+	 * @param permitType type of the permit
+	 * @param expTime    expiration time of the permit
+	 * @param licenseNum license number of the vehicle for the permit
+	 * @param zoneID     zone ID of the permit
+	 * @param lotName    lot name of the permit
+	 */
+	public static void updatePermit(final String permitID, final String spaceType, final String startDate,
+			final String expDate, final String driverID, final String permitType, final String expTime,
+			final String licenseNum, final String zoneID, final String lotName) {
+
+		// can you update the permit id
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+		java.sql.Date startDateFormatted;
+		java.util.Date startParser;
+
+		java.util.Date expParser;
+		java.sql.Date expDateFormatted;
+
+		SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+		java.util.Date timeParser;
+		java.sql.Time sqlTime;
+
+		try {
+			startParser = dateFormat.parse(startDate);
+			startDateFormatted = new java.sql.Date(startParser.getTime());
+			expParser = dateFormat.parse(expDate);
+			expDateFormatted = new java.sql.Date(expParser.getTime());
+
+			timeParser = timeFormat.parse(expTime);
+			sqlTime = new java.sql.Time(timeParser.getTime());
+
+			// Update the permit with the specified permit ID
+			// can you update the permit ID
+
+			statement.executeUpdate("UPDATE Permit SET SpaceType=" + spaceType + "," + " SET SpaceType=" + spaceType
+					+ "," + " SET StartDate=" + startDateFormatted + "," + " SET ExpDate=" + expDateFormatted + ","
+					+ " SET DriverID=" + driverID + "," + " SET PermitType=" + permitType + "," + " SET ExpTime="
+					+ sqlTime + "," + " SET ExpTime=" + expTime + "," + " SET LicenseNum=" + licenseNum + ","
+					+ " SET ZoneID=" + zoneID + "," + " SET LotName=" + lotName + "WHERE Permit.PermitID=" + permitID
+					+ ";");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			System.out.println("Error message");
 		}
-	
-		// public static void deletePermit
-		
-		// public static void assignPermit
-		
-		// public static void getPermit
-		
-		// public static void enterVehicle
-		
-		// public static void updateVehicle
-		
-		// public static void deleteVehicle
-		
-		
+
+	}
+
+	/**
+	 * Deletes a permit with the given permit ID.
+	 * 
+	 * @param permitID id of permit to delete
+	 */
+	public static void deletePermit(final String permitID) {
+
+		try {
+			// Delete entry from Space table with matching space number
+			statement.executeUpdate("DELETE FROM Permit WHERE PermitId =" + permitID + ";");
+		} catch (SQLException e) {
+			System.out.println("Error message");
+		}
+	}
+
+	/**
+	 * Assigns the specified permit to the given driver ID.
+	 * 
+	 * @param permitID
+	 */
+	public static void assignPermit(final String driverID, final String permitID) {
+		try {
+			// Delete entry from Space table with matching space number
+			statement.executeUpdate("UPDATE PERMIT SET DriverID = " + driverID + "WHERE PermitID = " + permitID + ";");
+
+		} catch (SQLException e) {
+			System.out.println("Error message");
+		}
+	}
+
+	/**
+	 * Returns the name and status of permit the with the specified permitID.
+	 * 
+	 * @param permitID the ID of the permit to return
+	 */
+	public static void getPermitInfo(final String permitID) {
+		// not sure how to do this
+		// have to return information about the permit
+	}
+
+	/**
+	 * Enters a vehicle into the database with a specified license number, year,
+	 * model, color, and manufacturer.
+	 * 
+	 * @param licenseNum license number of vehicle
+	 * @param year       year of the vehicle
+	 * @param model      model of the vehicle
+	 * @param color      color of the vehicle
+	 * @param manf       manf of the vehicle
+	 */
+	public static void enterVehicle(final String licenseNum, final String year, final String model, final String color,
+			final String manf) {
+
+		try {
+			statement.executeUpdate("INSERT INTO Vehicle (LicenseNum, Year, Model, Color, Manf) VALUES (" + licenseNum
+					+ ", " + year + ", " + model + ", " + color + ", " + manf + ");");
+
+		} catch (SQLException e) {
+			System.out.println("Error message");
+		}
+	}
+
+	public static void updateVehicle(final String licenseNum, final String year, final String model, final String color,
+			final String manf) {
+		try {
+			statement.executeUpdate("INSERT INTO Vehicle (LicenseNum, Year, Model, Color, Manf) VALUES (" + licenseNum
+					+ ", " + year + ", " + model + ", " + color + ", " + manf + ");");
+
+			statement
+					.executeUpdate("UPDATE Vehicle SET Year=" + year + "," + " SET Model=" + model + "," + " SET Color="
+							+ color + "," + " SET Manf=" + manf + "WHERE Vehicle.LicenseNum=" + licenseNum + ";");
+
+		} catch (SQLException e) {
+			System.out.println("Error message");
+		}
+
+	}
+
+	/**
+	 * Deletes a vehicle with the given license plate number
+	 * 
+	 * @param licenseNum license plate number of the vehicle to delete
+	 */
+	public static void deleteVehicle(final String licenseNum) {
+		try {
+			statement.executeUpdate("DELETE FROM Permit WHERE LicenseNum =" + licenseNum + ";");
+
+		} catch (SQLException e) {
+			System.out.println("Error message");
+		}
+
+	}
 
 	// TODO
 	/**
