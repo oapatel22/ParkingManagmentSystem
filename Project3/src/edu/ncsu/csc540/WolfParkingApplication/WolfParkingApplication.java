@@ -469,9 +469,9 @@ public class WolfParkingApplication {
 	 * Creates a new Citation entry with the given citation information.
 	 * 
 	 * @param CitationDate   the date when the citation is created
-	 * @param Fee            fee ($25 for category “Invalid Permit,” $30 for
-	 *                       category “Expired Permit,” $40 for category “No
-	 *                       Permit”, but handicap users will receive a 50% discount
+	 * @param Fee            fee ($25 for category "Invalid Permit," $30 for
+	 *                       category "Expired Permit," $40 for category "No
+	 *                       Permit", but handicap users will receive a 50% discount
 	 *                       on all citation fees)
 	 * @param PaymentStatus  the status (if the driver has paid for the citation) of
 	 *                       the citation to be created values can be {paid,
@@ -589,15 +589,16 @@ public class WolfParkingApplication {
 	 * Returns a table titled TotalCitations with the name of the parking lot and
 	 * the associated number of citation for each lot within a given time frame
 	 * 
-	 * @param LotName   the name of the parking lot
 	 * @param StartDate the earliest the citation was given
 	 * @param EndDate   the latest the citation was given
 	 */
-	public static void getCitationReportByTime(final String LotName, final String StartDate, final String EndDate) {
+	public static void getCitationReportByTime(final String StartDate, final String EndDate) {
 		try {
-
+			statement.executeUpdate(
+					"SELECT p.LotName, COUNT(c.CitationNumber) AS TotalCitations FROM ParkingLot p LEFT JOIN Citation c ON p.LotName = c.LotName AND c.CitationDate BETWEEN '"
+							+ StartDate + "' AND '" + EndDate + "' GROUP BY p.LotName");
 		} catch (SQLException e) {
-
+			System.out.println("Error message");
 		}
 	}
 
@@ -608,9 +609,9 @@ public class WolfParkingApplication {
 	 */
 	public static void getZones(final String LotName) {
 		try {
-
+			statement.executeUpdate("SELECT * FROM Zone WHERE LotName = '" + LotName + "';");
 		} catch (SQLException e) {
-
+			System.out.println("Error message");
 		}
 	}
 
@@ -618,14 +619,24 @@ public class WolfParkingApplication {
 	 * Gets the number of people who have not paid their citation
 	 */
 	public static void getCurrentViolation() {
-
+		try {
+			statement.executeUpdate(
+					"SELECT COUNT(DISTINCT LicenseNum) AS Violations FROM Citation WHERE PaymentStatus = 'Unpaid';");
+		} catch (SQLException e) {
+			System.out.println("Error message");
+		}
 	}
 
 	/**
 	 * Gets the amount of employees
 	 */
 	public static void getEmployeeZone() {
-
+		try {
+			statement.executeUpdate(
+					"SELECT COUNT(*) AS Employee Zones From Permit Join Driver On Permit.DriverID = Driver.DriverID WHERE Permit.ZoneID = ‘D’ AND Driver.Status = ‘E’;");
+		} catch (SQLException e) {
+			System.out.println("Error message");
+		}
 	}
 
 	/**
@@ -635,9 +646,9 @@ public class WolfParkingApplication {
 	 */
 	public static void getPermitInformation(final String DriverId) {
 		try {
-
+			statement.executeUpdate("SELECT * From Permit WHERE Permit.DriverId = '" + DriverId + "';");
 		} catch (SQLException e) {
-
+			System.out.println("Error message");
 		}
 	}
 
@@ -648,9 +659,10 @@ public class WolfParkingApplication {
 	 */
 	public static void getAvailableSpaces(final String LotName) {
 		try {
-
+			statement.executeUpdate("SELECT SpaceNumber From Space WHERE spaceType = 'regular' AND lotName = '"
+					+ LotName + "' AND AvailabiltyStatus = 'Available';");
 		} catch (SQLException e) {
-
+			System.out.println("Error message");
 		}
 	}
 
