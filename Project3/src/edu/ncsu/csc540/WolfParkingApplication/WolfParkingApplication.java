@@ -21,8 +21,12 @@ public class WolfParkingApplication {
 	public static void main(final String[] args) {
 
 		System.out.println("Welcome to the WolfParking Managment System!");
-
 		initialize();
+
+		// enterDriver("jbfjd", "S", "Dylan");
+		// updateDriverInformation("jbfjd", "V", "Dylan");
+		deleteDriver("jbfjd");
+
 		close();
 	}
 
@@ -35,11 +39,11 @@ public class WolfParkingApplication {
 	 * @param status   the driver's status
 	 * @param name     the name of the driver
 	 */
-	public static void enterDriver(final int driverID, final String status, final String name) {
+	public static void enterDriver(final String driverID, final String status, final String name) {
 		try {
 			// Inserting data into Driver table
-			statement.executeUpdate("INSERT INTO Driver (DriverID, Name, Status) VALUES" + "(" + driverID + "," + name
-					+ "," + status + ");");
+			statement.executeUpdate("INSERT INTO Driver (DriverID, Name, Status) VALUES" + "('" + driverID + "','" + name
+					+ "','" + status + "');");
 		} catch (SQLException e) {
 			System.out.println("Error message");
 		}
@@ -53,11 +57,11 @@ public class WolfParkingApplication {
 	 * @param status   the updated status of the driver entry to be updated
 	 * @param name     the updated name of the driver entry to be updated
 	 */
-	public static void updateDriverInformation(final int driverID, final String status, final String name) {
+	public static void updateDriverInformation(final String driverID, final String status, final String name) {
 		try {
 			// Update driver entry with the matching driverID
-			statement.executeUpdate("UPDATE Driver SET Name=" + name + "," + " SET Status=" + status + ","
-					+ "WHERE Driver.DriverID=" + driverID + ";");
+			statement.executeUpdate("UPDATE Driver SET Name='" + name + "', Status='" + status + "' "
+					+ "WHERE DriverID='" + driverID + "';");
 		} catch (SQLException e) {
 			System.out.println("Error message");
 		}
@@ -68,10 +72,10 @@ public class WolfParkingApplication {
 	 *
 	 * @param driverID the ID of the driver entry to be deleted
 	 */
-	public static void deleteDriver(final int driverID) {
+	public static void deleteDriver(final String driverID) {
 		try {
 			// Delete driver entry with the matching driverID
-			statement.executeUpdate("DELETE FROM Driver WHERE DriverID=" + driverID + ";");
+			statement.executeUpdate("DELETE FROM Driver WHERE DriverID='" + driverID + "';");
 		} catch (SQLException e) {
 			System.out.println("Error message");
 		}
@@ -633,7 +637,7 @@ public class WolfParkingApplication {
 	public static void getEmployeeZone() {
 		try {
 			statement.executeUpdate(
-					"SELECT COUNT(*) AS Employee Zones From Permit Join Driver On Permit.DriverID = Driver.DriverID WHERE Permit.ZoneID = ‘D’ AND Driver.Status = ‘E’;");
+					"SELECT COUNT(*) AS Employee Zones From Permit Join Driver On Permit.DriverID = Driver.DriverID WHERE Permit.ZoneID = ï¿½Dï¿½ AND Driver.Status = ï¿½Eï¿½;");
 		} catch (SQLException e) {
 			System.out.println("Error message");
 		}
