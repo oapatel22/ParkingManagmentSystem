@@ -25,7 +25,29 @@ public class WolfParkingApplication {
 
 		// enterDriver("jbfjd", "S", "Dylan");
 		// updateDriverInformation("jbfjd", "V", "Dylan");
-		deleteDriver("jbfjd");
+		// deleteDriver("jbfjd");
+		// enterLot("LotName 1", "address 1");
+		// enterVehicle("LicenseNum 1", "2003", "fjbgj", "Black", "jjjjj");
+
+		// stithi starts : tasks and operations 3
+		// dummy date and time objects // update later
+		java.util.Date today = new java.util.Date();
+		java.sql.Date date = new java.sql.Date(today.getTime()); //your SQL date object
+
+		// time in milliseconds 
+        long milli = 123456789999l; 
+        java.sql.Time time = new java.sql.Time(milli); 
+
+		enterCitation (date, 10, "Unpaid", time, 1, "Invalid Permit", "LotName 1", "LicenseNum 1");
+		updateCitation(1, "Expired Permit", 50);
+		enterCitation (date, 10, "Unpaid", time, 2, "Invalid Permit", "LotName 1", "LicenseNum 1");
+		deleteCitation(2);
+		// NEED TO CHECK // FIX
+		System.out.println (checkParkingViolation("LotName 1", "LicenseNum 1", date, time));
+		payCitation(1);
+		requestAppeal (1);
+		// stithi ends : tasks and operations 3
+
 
 		close();
 	}
@@ -92,7 +114,7 @@ public class WolfParkingApplication {
 		try {
 			// Inserting data into the ParkingLot table
 			statement.executeUpdate(
-					"INSERT INTO ParkingLot (LotName, Address) VALUES (" + lotName + "," + address + ");");
+					"INSERT INTO ParkingLot (LotName, Address) VALUES ('" + lotName + "','" + address + "');");
 		} catch (SQLException e) {
 			System.out.println("Error message");
 		}
@@ -416,8 +438,8 @@ public class WolfParkingApplication {
 			final String manf) {
 
 		try {
-			statement.executeUpdate("INSERT INTO Vehicle (LicenseNum, Year, Model, Color, Manf) VALUES (" + licenseNum
-					+ ", " + year + ", " + model + ", " + color + ", " + manf + ");");
+			statement.executeUpdate("INSERT INTO Vehicle (LicenseNum, Year, Model, Color, Manf) VALUES ('" + licenseNum
+					+ "', '" + year + "', '" + model + "', '" + color + "', '" + manf + "');");
 
 		} catch (SQLException e) {
 			System.out.println("Error message");
@@ -494,9 +516,9 @@ public class WolfParkingApplication {
 		try {
 			// Insert entry into Citation table
 			statement.executeUpdate(
-					"INSERT INTO Citation (CitationDate, Fee, PaymentStatus, CitationTime, CitationNumber, Category, LotName, LicenseNum) VALUES ("
-							+ CitationDate + "," + Fee + ",\"" + PaymentStatus + "\"," + CitationTime + ","
-							+ CitationNumber + ",\"" + Category + "\",\"" + LotName + "\",\"" + LicenseNum + "\");");
+					"INSERT INTO Citation (CitationDate, Fee, PaymentStatus, CitationTime, CitationNumber, Category, LotName, LicenseNum) VALUES ('"
+							+ CitationDate + "'," + Fee + ",'" + PaymentStatus + "','" + CitationTime + "',"
+							+ CitationNumber + ",'" + Category + "','" + LotName + "','" + LicenseNum + "');");
 
 		} catch (SQLException e) {
 			System.out.println("Error message");
@@ -513,8 +535,8 @@ public class WolfParkingApplication {
 	public static void updateCitation(final int CitationNumber, final String Category, final double Fee) {
 		try {
 			// Updating Citation entry with existing CitationNumber
-			statement.executeUpdate("Update Citation SET Fee = " + Fee + ", Category = \"" + Category
-					+ "\" WHERE CitationNumber = " + CitationNumber + ";");
+			statement.executeUpdate("Update Citation SET Fee = " + Fee + ", Category = '" + Category
+					+ "' WHERE CitationNumber = " + CitationNumber + ";");
 		} catch (SQLException e) {
 			System.out.println("Error message");
 		}
@@ -543,16 +565,18 @@ public class WolfParkingApplication {
 	 * @param ExpDate    the date when the permit will expire
 	 * @param ExpTime    the time of the day when the permit will expire
 	 */
-	public static void checkParkingViolation(final String LotName, final String LicenseNum, final Date ExpDate,
+	public static int checkParkingViolation(final String LotName, final String LicenseNum, final Date ExpDate,
 			final Time ExpTime) {
 		try {
 			// Get permit id from Permit table with matching LicenseNum
-			statement.executeUpdate(
-					"SELECT PermitID FROM Permit WHERE LicenseNum = \"" + LicenseNum + "\" AND LotName = \"" + LotName
-							+ "\" AND ExpDate >= " + ExpDate + "  AND ExpTime >= " + ExpTime + ";");
+			return statement.executeUpdate(
+					"SELECT PermitID FROM Permit WHERE LicenseNum = '" + LicenseNum + "' AND LotName = '" + LotName
+							+ "' AND ExpDate >= '" + ExpDate + "'  AND ExpTime >= '" + ExpTime + "';");
 		} catch (SQLException e) {
 			System.out.println("Error message");
+			return -1;
 		}
+		
 	}
 
 	/**
@@ -564,7 +588,7 @@ public class WolfParkingApplication {
 	public static void payCitation(final int CitationNumber) {
 		try {
 			// Updating Citation entry with existing CitationNumber
-			statement.executeUpdate("Update Citation SET Fee =  0 AND PaymentStatus = \"Paid\""
+			statement.executeUpdate("Update Citation SET Fee =  0, PaymentStatus = 'Paid'"
 					+ " WHERE CitationNumber = " + CitationNumber + ";");
 		} catch (SQLException e) {
 			System.out.println("Error message");
@@ -580,7 +604,7 @@ public class WolfParkingApplication {
 	public static void requestAppeal(final int CitationNumber) {
 		try {
 			// Updating Citation entry with existing CitationNumber
-			statement.executeUpdate("Update Citation SET Fee =  0 AND PaymentStatus = \"In Appeal\""
+			statement.executeUpdate("Update Citation SET Fee =  0, PaymentStatus = 'In Appeal'"
 					+ " WHERE CitationNumber = " + CitationNumber + ";");
 		} catch (SQLException e) {
 			System.out.println("Error message");
