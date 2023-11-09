@@ -24,6 +24,7 @@ public class WolfParkingApplication {
         initialize();
 
         // enterDriver("jbfjd", "S", "Dylan");
+		getDriverInfo("jbfjd");
         // updateDriverInformation("jbfjd", "V", "Dylan");
         // deleteDriver("jbfjd");
         // enterLot("LotName 1", "address 1");
@@ -40,14 +41,14 @@ public class WolfParkingApplication {
         long milli = 123456789999l;
         java.sql.Time time = new java.sql.Time( milli );
 
-        enterCitation( date, 10, "Unpaid", time, 1, "Invalid Permit", "LotName 1", "LicenseNum 1" );
-        updateCitation( 1, "Expired Permit", 50 );
-        enterCitation( date, 10, "Unpaid", time, 2, "Invalid Permit", "LotName 1", "LicenseNum 1" );
-        deleteCitation( 2 );
+        // enterCitation( date, 10, "Unpaid", time, 1, "Invalid Permit", "LotName 1", "LicenseNum 1" );
+        // updateCitation( 1, "Expired Permit", 50 );
+        // enterCitation( date, 10, "Unpaid", time, 2, "Invalid Permit", "LotName 1", "LicenseNum 1" );
+        // deleteCitation( 2 );
         // NEED TO CHECK // FIX
-        System.out.println( checkParkingViolation( "LotName 1", "LicenseNum 1", date, time ) );
-        payCitation( 1 );
-        requestAppeal( 1 );
+        checkParkingViolation( "LotName 1", "LicenseNum 1", date, time );
+        // payCitation( 1 );
+        // requestAppeal( 1 );
         // stithi ends : tasks and operations 3
 
         close();
@@ -406,10 +407,42 @@ public class WolfParkingApplication {
      * @param driverID
      *            the ID of the driver to return
      */
-    public static void getDriverInfo ( final String driverID ) {
-        // not sure how to do this
-        // have to return information about the driver
-    }
+	public static void getDriverInfo(final String driverID) {
+		try {
+			ResultSet rs = statement.executeQuery("SELECT Name, Status FROM Driver WHERE DriverID='" + driverID + "';" );
+			String s = "";
+			StringBuilder sb = new StringBuilder(s);
+
+			while (rs.next()) {
+				sb.append(rs.getString("Name"));
+				sb.append(" ");
+				sb.append(rs.getString("Status"));
+			}
+			System.out.println(sb.toString());
+
+		} catch (SQLException e) {
+			System.out.println("Error message");
+		}
+	}
+
+	// public static void getDriverInfo2 ( final String driverID ) {
+	// 	try {
+	// 		ResultSet rs = statement.executeQuery("SELECT * FROM Driver WHERE DriverID='" + driverID + "';" );
+	// 		StringBuilder sb = new StringBuilder();
+	// 		ResultSetMetaData mrs = rs.getMetaData();
+	// 		int numCols = mrs.getColumnCount();
+	// 		// System.out.println(numCols);
+	// 		while (rs.next()) {
+	// 			for(int i = 1; i <= numCols; i++){
+	// 				sb.append(rs.getString(i) + " ");			
+	// 			}
+	// 		}
+
+	// 		System.out.println(sb.toString());
+	// 	} catch (Exception e) {
+	// 		// TODO: handle exception
+	// 	}
+    // }
 
     /**
      * Adds a permit with the specified parameters, including the permit ID, the
@@ -657,6 +690,19 @@ public class WolfParkingApplication {
 
     }
 
+	/**
+	 * 
+	 * @param licenseNum
+	 */
+	public static void assignVehicle (final String licenseNum, final int permitID) {
+		try {
+            statement.executeUpdate("");
+        }
+        catch ( SQLException e ) {
+            System.out.println( "Error message" );
+        }
+	}
+
     // Task and operations 3: Generating and maintaining citations
     /**
      * Creates a new Citation entry with the given citation information.
@@ -750,17 +796,26 @@ public class WolfParkingApplication {
      * @param ExpTime
      *            the time of the day when the permit will expire
      */
-    public static int checkParkingViolation ( final String LotName, final String LicenseNum, final Date ExpDate,
+    public static void checkParkingViolation ( final String LotName, final String LicenseNum, final Date ExpDate,
             final Time ExpTime ) {
         try {
             // Get permit id from Permit table with matching LicenseNum
-            return statement.executeUpdate(
+            ResultSet rs =  statement.executeQuery(
                     "SELECT PermitID FROM Permit WHERE LicenseNum = '" + LicenseNum + "' AND LotName = '" + LotName
                             + "' AND ExpDate >= '" + ExpDate + "'  AND ExpTime >= '" + ExpTime + "';" );
+
+			StringBuilder sb = new StringBuilder();
+			int column = 1;
+			while(rs.next()) {
+				sb.append(rs.getString(column));
+				column++;
+			}
+
+			System.out.println(sb.toString());
         }
         catch ( SQLException e ) {
             System.out.println( "Error message" );
-            return -1;
+            // return ;
         }
 
     }
