@@ -566,7 +566,6 @@ public class WolfParkingApplication {
         catch ( SQLException e ) {
             System.out.println( "Error message" );
         }
-
     }
 
     /**
@@ -575,33 +574,30 @@ public class WolfParkingApplication {
      * @param permitID
      *            id of permit to delete
      */
-    public static void deletePermit ( final String permitID ) {
+    public static void deletePermit(final String permitID) {
+		try {
+			// Delete entry from Space table with matching space number
+			statement.executeUpdate("DELETE FROM Permit WHERE PermitId ='" + permitID + "';");
+		} catch (SQLException e) {
 
-        try {
-            // Delete entry from Space table with matching space number
-            statement.executeUpdate( "DELETE FROM Permit WHERE PermitId =" + permitID + ";" );
-        }
-        catch ( SQLException e ) {
-            System.out.println( "Error message" );
-        }
-    }
+			System.out.println("Error message");
+		}
+	}
 
     /**
-     * Assigns the specified permit to the given driver ID.
-     *
-     * @param permitID
-     */
-    public static void assignPermit ( final String driverID, final String permitID ) {
-        try {
-            // Delete entry from Space table with matching space number
-            statement
-                    .executeUpdate( "UPDATE PERMIT SET DriverID = " + driverID + "WHERE PermitID = " + permitID + ";" );
+	 * Assigns the specified permit to the given driver ID.
+	 *
+	 * @param permitID
+	 */
+	public static void assignPermit(final String driverID, final String permitID) {
+		try {
+			// Delete entry from Space table with matching space number
+			statement.executeUpdate("UPDATE PERMIT SET DriverID = '" + driverID + "'WHERE PermitID = '" + permitID + "';");
 
-        }
-        catch ( SQLException e ) {
-            System.out.println( "Error message" );
-        }
-    }
+		} catch (SQLException e) {
+			System.out.println("Error message");
+		}
+	}
 
     /**
      * Returns the name and status of permit the with the specified permitID.
@@ -629,14 +625,12 @@ public class WolfParkingApplication {
      * @param manf
      *            manf of the vehicle
      */
-    public static void enterVehicle ( final String licenseNum, final String year, final String model,
-            final String color, final String manf ) {
-
-        try {
-            statement.executeUpdate( "INSERT INTO Vehicle (LicenseNum, Year, Model, Color, Manf) VALUES ('" + licenseNum
-                    + "', '" + year + "', '" + model + "', '" + color + "', '" + manf + "');" );
-
-        }
+    public static void enterVehicle(final String licenseNum, final String year, final String model, final String color,
+			final String manf) {
+		try {
+			statement.executeUpdate("INSERT INTO Vehicle (LicenseNum, Year, Model, Color, Manf) VALUES ('" + licenseNum
+					+ "', '" + year + "', '" + model + "', '" + color + "', '" + manf + "');");
+		}
         catch ( SQLException e ) {
             System.out.println( "Error message" );
         }
@@ -651,12 +645,10 @@ public class WolfParkingApplication {
             statement.executeUpdate(
                     "UPDATE Vehicle SET Year=" + year + "," + " SET Model=" + model + "," + " SET Color=" + color + ","
                             + " SET Manf=" + manf + "WHERE Vehicle.LicenseNum=" + licenseNum + ";" );
-
         }
         catch ( SQLException e ) {
             System.out.println( "Error message" );
         }
-
     }
 
     /**
@@ -665,16 +657,14 @@ public class WolfParkingApplication {
      * @param licenseNum
      *            license plate number of the vehicle to delete
      */
-    public static void deleteVehicle ( final String licenseNum ) {
-        try {
-            statement.executeUpdate( "DELETE FROM Permit WHERE LicenseNum =" + licenseNum + ";" );
+    public static void deleteVehicle(final String licenseNum) {
+		try {
+			statement.executeUpdate("DELETE FROM Permit WHERE LicenseNum ='" + licenseNum + "';");
 
-        }
-        catch ( SQLException e ) {
-            System.out.println( "Error message" );
-        }
-
-    }
+		} catch (SQLException e) {
+			System.out.println("Error message");
+		}
+	}
 
 	/**
 	 * 
