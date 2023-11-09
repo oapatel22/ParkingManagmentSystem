@@ -23,12 +23,19 @@ public class WolfParkingApplication {
         System.out.println( "Welcome to the WolfParking Managment System!" );
         initialize();
 
+		preloadDemoData();
+
+
+
         // enterDriver("jbfjd", "S", "Dylan");
-		getDriverInfo("jbfjd");
+		// getDriverInfo("jbfjd");
         // updateDriverInformation("jbfjd", "V", "Dylan");
         // deleteDriver("jbfjd");
         // enterLot("LotName 1", "address 1");
         // enterVehicle("LicenseNum 1", "2003", "fjbgj", "Black", "jjjjj");
+		// enterPermitInfo (1, "spaceType", "2023-05-12",
+		// "expDate", "jbfjd", "permitType",  "expTime",
+		// "licenseNum", "zoneID", "LotName 1" );
 
         // stithi starts : tasks and operations 3
         // dummy date and time objects // update later
@@ -46,10 +53,14 @@ public class WolfParkingApplication {
         // enterCitation( date, 10, "Unpaid", time, 2, "Invalid Permit", "LotName 1", "LicenseNum 1" );
         // deleteCitation( 2 );
         // NEED TO CHECK // FIX
-        checkParkingViolation( "LotName 1", "LicenseNum 1", date, time );
+        // checkParkingViolation( "LotName 1", "LicenseNum 1", date, time );
         // payCitation( 1 );
         // requestAppeal( 1 );
         // stithi ends : tasks and operations 3
+
+		// enterZone ("zone 1", "LotName 1");
+		// getZones("LotName 1");  
+		// getCurrentViolation ();
 
         close();
     }
@@ -187,7 +198,7 @@ public class WolfParkingApplication {
         try {
             // Inserting into Zone table
             statement
-                    .executeUpdate( "INSERT INTO Zone (ZoneID, LotName) VALUES ('" + zoneID + "','" + lotName + "');" );
+                    .executeUpdate( "INSERT INTO Zone(ZoneID, LotName) VALUES ('" + zoneID + "','" + lotName + "');" );
         }
         catch ( SQLException e ) {
             System.out.println( "Error message" );
@@ -471,46 +482,21 @@ public class WolfParkingApplication {
      *            lot name of the permit
      *
      */
-    public static void enterPermitInfo ( final String permitID, final String spaceType, final String startDate,
-            final String expDate, final String driverID, final String permitType, final String expTime,
-            final String licenseNum, final String zoneID, final String lotName ) {
+    public static void enterPermitInfo ( final String permitID, final String permitType, final String zoneID, final String lotName, final String driverID, final String licenseNum, final String spaceType, final String startDate,
+		final String expDate, final String expTime ) {
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat( "MM/dd/yyyy" );
-        java.sql.Date startDateFormatted;
-        java.util.Date startParser;
+		try {
+			statement.executeUpdate(
+				"INSERT INTO Permit (PermitID, SpaceType, StartDate, ExpDate, DriverID, PermitType, ExpTime, LicenseNum, ZoneID, LotName) VALUES ('"
+				+ permitID + "','" + spaceType + "','" + startDate + "','" + expDate + "','" + driverID
+				+ "','" + permitType + "','" + expTime + "','" + licenseNum + "','" + zoneID + "','"
+				+ lotName + "');" );
+			}
+		catch ( SQLException e ) {
+			System.out.println( "Error message" );
+		}
 
-        java.util.Date expParser;
-        java.sql.Date expDateFormatted;
-
-        SimpleDateFormat timeFormat = new SimpleDateFormat( "HH:mm:ss" );
-        java.util.Date timeParser;
-        java.sql.Time sqlTime;
-
-        try {
-            startParser = dateFormat.parse( startDate );
-            startDateFormatted = new java.sql.Date( startParser.getTime() );
-            expParser = dateFormat.parse( expDate );
-            expDateFormatted = new java.sql.Date( expParser.getTime() );
-
-            timeParser = timeFormat.parse( expTime );
-            sqlTime = new java.sql.Time( timeParser.getTime() );
-
-            // Enter the permit info into the permits table
-            statement.executeUpdate(
-                    "INSERT INTO Permit (PermitID, SpaceType, StartDate, ExpDate, DriverID, PermitType, ExpTime, LicenseNum, ZoneID, LotName) VALUES ("
-                            + permitID + ", " + spaceType + ", " + startDateFormatted + ", " + expDateFormatted + ", "
-                            + driverID + ", " + permitType + ", " + sqlTime + ", " + licenseNum + ", " + zoneID + ", "
-                            + lotName + ");" );
-
-        }
-        catch ( ParseException e ) {
-            e.printStackTrace();
-        }
-        catch ( SQLException e ) {
-            System.out.println( "Error message" );
-        }
-
-    }
+	}
 
     // CAN YOU UPDATE PRIMARY KEYS?
     /**
@@ -802,15 +788,17 @@ public class WolfParkingApplication {
             // Get permit id from Permit table with matching LicenseNum
             ResultSet rs =  statement.executeQuery(
                     "SELECT PermitID FROM Permit WHERE LicenseNum = '" + LicenseNum + "' AND LotName = '" + LotName
-                            + "' AND ExpDate >= '" + ExpDate + "'  AND ExpTime >= '" + ExpTime + "';" );
+                            // + "' AND ExpDate >= '" + ExpDate + "'  AND ExpTime >= '" + ExpTime + "';" );
+							+ "';" );
 
-			StringBuilder sb = new StringBuilder();
-			int column = 1;
-			while(rs.next()) {
-				sb.append(rs.getString(column));
-				column++;
+			String s = "";
+			StringBuilder sb = new StringBuilder(s);
+
+			while (rs.next()) {
+				sb.append(rs.getString("PermitID"));
+				// sb.append(" ");
+				// sb.append(rs.getString("Status"));
 			}
-
 			System.out.println(sb.toString());
         }
         catch ( SQLException e ) {
@@ -887,7 +875,16 @@ public class WolfParkingApplication {
      */
     public static void getZones ( final String LotName ) {
         try {
-            statement.executeUpdate( "SELECT * FROM Zone WHERE LotName = '" + LotName + "';" );
+        	ResultSet rs = statement.executeQuery( "SELECT * FROM Zone WHERE LotName = '" + LotName + "';" );
+        	String s = "";
+        	StringBuilder sb = new StringBuilder(s);
+        	
+        	while (rs.next()) {
+				sb.append(rs.getString("ZoneID"));
+				sb.append(" ");
+				sb.append(rs.getString("LotName"));
+			}
+			System.out.println(sb.toString());
         }
         catch ( SQLException e ) {
             System.out.println( "Error message" );
@@ -899,12 +896,18 @@ public class WolfParkingApplication {
      */
     public static void getCurrentViolation () {
         try {
-            statement.executeUpdate(
-                    "SELECT COUNT(DISTINCT LicenseNum) AS Violations FROM Citation WHERE PaymentStatus = 'Unpaid';" );
-        }
-        catch ( SQLException e ) {
-            System.out.println( "Error message" );
-        }
+			ResultSet rs = statement.executeQuery(
+					"SELECT COUNT(DISTINCT LicenseNum) AS Violations FROM Citation WHERE PaymentStatus = 'Unpaid';");
+			String s = "";
+			StringBuilder sb = new StringBuilder(s);
+
+			while (rs.next()) {
+				sb.append(rs.getString("Violations"));
+			}
+			System.out.println(sb.toString());
+		} catch (SQLException e) {
+			System.out.println("Error message");
+		}
     }
 
     /**
@@ -950,6 +953,8 @@ public class WolfParkingApplication {
             System.out.println( "Error message" );
         }
     }
+
+	
 
     private static void initialize () {
         try {
@@ -1109,5 +1114,122 @@ public class WolfParkingApplication {
             }
         }
     }
+
+	private static void preloadDemoData () {
+		try {
+            statement.executeUpdate("drop database stithi;");
+			statement.executeUpdate("create database stithi;");
+			statement.executeUpdate("use stithi;");
+        }
+        catch ( SQLException e ) {
+            System.out.println( "Error message" );
+        }
+
+		createAllTables ();
+		populateTables ();
+	}
+
+	private static void createAllTables () {
+		// Creating Security table
+		try {
+            statement.executeUpdate(
+            "CREATE TABLE Security (" + " SecurityID INTEGER," + " PRIMARY KEY (SecurityID)" + ");" );
+
+            // Creating Driver table
+            statement.executeUpdate(
+            "CREATE TABLE Driver (" + " DriverID VARCHAR(20) NOT NULL," + "Name VARCHAR(36) NOT NULL," + " Status VARCHAR(1) NOT NULL," + " PRIMARY KEY (DriverID)" +
+            ");" );
+
+            // Creating ParkingLot table
+            statement.executeUpdate( "CREATE TABLE ParkingLot (" + " LotName VARCHAR(128) NOT NULL,"
+            + " Address VARCHAR(128) NOT NULL," + " PRIMARY KEY (LotName)" +
+            ");" );
+
+            // Creating Vehicle table
+            statement.executeUpdate( "CREATE TABLE Vehicle (" + " LicenseNum VARCHAR(128) NOT NULL,"
+            + " Year VARCHAR(4)," + " Model VARCHAR(20)," + " Color VARCHAR(20),"
+            + " Manf VARCHAR(20)," + " PRIMARY KEY (LicenseNum)" + ");" );
+
+            // Creating Zone table
+            statement.executeUpdate( "CREATE TABLE Zone (" + " ZoneID VARCHAR(2) NOT NULL,"
+            + " LotName VARCHAR(128) NOT NULL," + " PRIMARY KEY (ZoneID, LotName),"
+            + " FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON UPDATE CASCADE" +
+            ");" );
+
+            // Creating Space table
+            statement.executeUpdate( "CREATE TABLE Space (" + " SpaceNumber INTEGER NOT NULL,"
+            + " LotName VARCHAR(128) NOT NULL," + " SpaceType VARCHAR(20) NOT NULL,"
+            + " AvailabilityStatus VARCHAR(20) NOT NULL," + " PRIMARY KEY (SpaceNumber, LotName),"
+            + " FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON UPDATE CASCADE" +
+            ");" );
+
+            // Creating Permit table
+            statement.executeUpdate( "CREATE TABLE Permit (" + " PermitID VARCHAR(20) NOT NULL,"
+            + " DriverID VARCHAR(20) NOT NULL, LicenseNum VARCHAR(20) NOT NULL, ZoneID VARCHAR(2) NOT NULL, LotName VARCHAR(20),"
+            + " StartDate DATE NOT NULL," + " ExpDate DATE NOT NULL," + " ExpTime TIME NOT NULL,"
+            + " SpaceType VARCHAR(20) NOT NULL," + " PermitType VARCHAR(20) NOT NULL,"
+            + " PRIMARY KEY (PermitID),"
+            + " FOREIGN KEY(DriverID) REFERENCES Driver (DriverID) ON UPDATE CASCADE ON DELETE CASCADE,"
+            + " FOREIGN KEY(LicenseNum) REFERENCES Vehicle (LicenseNum) ON UPDATE CASCADE ON DELETE CASCADE,"
+            + " FOREIGN KEY(ZoneID) REFERENCES Zone (ZoneID) ON UPDATE CASCADE ON DELETE CASCADE"
+            // + " FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON UPDATE CASCADE ON DELETE CASCADE"
+            + ");" );
+
+            // Creating Citation table
+            statement.executeUpdate( "CREATE TABLE Citation ("
+            + "CitationNumber INTEGER NOT NULL, LotName VARCHAR(128) NOT NULL, LicenseNum VARCHAR(128) NOT NULL,"
+            + "CitationDate DATE NOT NULL, Fee DOUBLE,"
+            + "PaymentStatus VARCHAR(32) NOT NULL, CitationTime TIME NOT NULL,"
+            + "Category VARCHAR(128) NOT NULL, PRIMARY KEY(CitationNumber),"
+            + "FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON UPDATE CASCADE,"
+            + "FOREIGN KEY(LicenseNum) REFERENCES Vehicle (LicenseNum) ON UPDATE CASCADE"
+            + ");" );
+
+            // Creating Maintain table
+            statement.executeUpdate( "CREATE TABLE Maintain (" + " CitationNumber INTEGER NOT NULL,"
+            + " SecurityID INTEGER NOT NULL," + " PRIMARY KEY (CitationNumber, SecurityID),"
+            + " FOREIGN KEY(CitationNumber) REFERENCES Citation (CitationNumber) ON UPDATE CASCADE,"
+            + " FOREIGN KEY(SecurityID) REFERENCES Security (SecurityID) ON UPDATE CASCADE" + ");" );
+		}
+        catch ( SQLException e ) {
+            System.out.println( "Error message" );
+        }
+	}
+
+	private static void populateTables () {
+		enterDriver("7729119111", "V", "Sam BankmanFried");
+		enterDriver("266399121", "E", "John Clay");
+		enterDriver("366399121", "E", "Julia Hicks");
+		enterDriver("466399121", "E", "Ivan Garcia");
+		enterDriver("122765234", "S", "Sachin Tendulkar");
+		enterDriver("9194789124", "V", "Charles Xavier");
+
+		enterLot("Poulton Deck", "1021 Main Campus Dr, Raleigh, NC, 27606");
+		enterLot("Partners Way Deck", "851 Partners Way, Raleigh, NC, 27606");
+		enterLot("Dan Allen Parking Deck", "110 Dan Allen Dr, Raleigh, NC, 27607");
+
+		enterVehicle("SBF", "2024", "GT-R-Nismo", "Pearl White TriCoat", "Nissan");
+		enterVehicle("Clay1", "2023", "Model S", "Ultra Red", "Tesla");
+		enterVehicle("Hicks1", "2024", "M2 Coupe", "Zandvoort Blue", "BMW");
+		enterVehicle("Garcia1", "2024", "Continental GT Speed", "Blue Fusion", "Bentley");
+		enterVehicle("CRICKET", "2024", "Civic SI", "Sonic Gray Pearl", "Honda");
+		enterVehicle("PROFX", "2024", "Taycan Sport Turismo", "Frozenblue Metallic", "Porsche");
+		// dummy extra data
+		enterVehicle("PROGTS", "2024", "Macan GTS", "Papaya Metallic", "Porsche");
+
+		// zones
+		enterZone ("V", "Poulton Deck");
+		enterZone ("A", "Partners Way Deck");
+		enterZone ("AS", "Dan Allen Parking Deck");
+
+		//LOT NAME MIGHT NEED TO GO IN HERE
+
+		enterPermitInfo( "VSBF1C", "Commuter", "V", null, "7729119111",  "SBF", "Regular", "2023-01-01", "2024-01-01", "06:00:00" );
+		enterPermitInfo( "EJC1R", "Residential", "A", null, "266399121", "Clay1", "Electric", "2010-01-01", "2030-01-01", "06:00:00" );
+		enterPermitInfo( "EJH2C", "Commuter", "A", null, "366399121", "Hicks1", "Regular", "2023-01-01", "2024-01-01", "06:00:00" );
+		enterPermitInfo( "EIG3C", "Commuter", "A", null,  "466399121", "Garcia1", "Regular", "2023-01-01", "2024-01-01", "06:00:00" );
+		enterPermitInfo( "SST1R", "Residential", "AS", null, "122765234", "CRICKET", "Compact Car", "2022-01-01", "2023-09-30", "06:00:00" );
+		enterPermitInfo( "VCX1SE", "Special event", "V", null, "9194789124", "PROFX", "Handicap", "2023-01-01", "2023-11-15", "06:00:00" );
+	}
 
 }
