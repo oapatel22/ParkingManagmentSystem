@@ -705,15 +705,15 @@ public class WolfParkingApplication {
      * @param LicenseNum
      *            the license number of the vehicle relevant to the citation
      */
-    public static void enterCitation ( final Date CitationDate, final double Fee, final String PaymentStatus,
-            final Time CitationTime, final int CitationNumber, final String Category, final String LotName,
+    public static void enterCitation ( final String CitationDate, final double Fee, final String PaymentStatus,
+            final String CitationTime, final String CitationNumber, final String Category, final String LotName,
             final String LicenseNum ) {
         try {
             // Insert entry into Citation table
             statement.executeUpdate(
                     "INSERT INTO Citation (CitationDate, Fee, PaymentStatus, CitationTime, CitationNumber, Category, LotName, LicenseNum) VALUES ('"
-                            + CitationDate + "'," + Fee + ",'" + PaymentStatus + "','" + CitationTime + "',"
-                            + CitationNumber + ",'" + Category + "','" + LotName + "','" + LicenseNum + "');" );
+                            + CitationDate + "'," + Fee + ",'" + PaymentStatus + "','" + CitationTime + "','"
+                            + CitationNumber + "','" + Category + "','" + LotName + "','" + LicenseNum + "');" );
 
         }
         catch ( SQLException e ) {
@@ -1162,12 +1162,12 @@ public class WolfParkingApplication {
             + " FOREIGN KEY(DriverID) REFERENCES Driver (DriverID) ON UPDATE CASCADE ON DELETE CASCADE,"
             + " FOREIGN KEY(LicenseNum) REFERENCES Vehicle (LicenseNum) ON UPDATE CASCADE ON DELETE CASCADE,"
             + " FOREIGN KEY(ZoneID) REFERENCES Zone (ZoneID) ON UPDATE CASCADE ON DELETE CASCADE"
-            // + " FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON UPDATE CASCADE ON DELETE CASCADE"
+            // + " FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON UPDATE CASCADE ON DELETE CASCADE" // CHECK
             + ");" );
 
             // Creating Citation table
             statement.executeUpdate( "CREATE TABLE Citation ("
-            + "CitationNumber INTEGER NOT NULL, LotName VARCHAR(128) NOT NULL, LicenseNum VARCHAR(128) NOT NULL,"
+            + "CitationNumber VARCHAR(32) NOT NULL, LotName VARCHAR(128) NOT NULL, LicenseNum VARCHAR(128) NOT NULL,"
             + "CitationDate DATE NOT NULL, Fee DOUBLE,"
             + "PaymentStatus VARCHAR(32) NOT NULL, CitationTime TIME NOT NULL,"
             + "Category VARCHAR(128) NOT NULL, PRIMARY KEY(CitationNumber),"
@@ -1205,7 +1205,7 @@ public class WolfParkingApplication {
 		enterVehicle("CRICKET", "2024", "Civic SI", "Sonic Gray Pearl", "Honda");
 		enterVehicle("PROFX", "2024", "Taycan Sport Turismo", "Frozenblue Metallic", "Porsche");
 		// dummy extra data
-		enterVehicle("PROGTS", "2024", "Macan GTS", "Papaya Metallic", "Porsche");
+		enterVehicle ("VAN-9910", null, "Macan GTS", "Papaya Metallic", null);
 
 		// zones
 		enterZone ("V", "Poulton Deck");
@@ -1213,13 +1213,24 @@ public class WolfParkingApplication {
 		enterZone ("AS", "Dan Allen Parking Deck");
 
 		//LOT NAME MIGHT NEED TO GO IN HERE
-
 		enterPermitInfo( "VSBF1C", "Commuter", "V", null, "7729119111",  "SBF", "Regular", "2023-01-01", "2024-01-01", "06:00:00" );
 		enterPermitInfo( "EJC1R", "Residential", "A", null, "266399121", "Clay1", "Electric", "2010-01-01", "2030-01-01", "06:00:00" );
 		enterPermitInfo( "EJH2C", "Commuter", "A", null, "366399121", "Hicks1", "Regular", "2023-01-01", "2024-01-01", "06:00:00" );
 		enterPermitInfo( "EIG3C", "Commuter", "A", null,  "466399121", "Garcia1", "Regular", "2023-01-01", "2024-01-01", "06:00:00" );
 		enterPermitInfo( "SST1R", "Residential", "AS", null, "122765234", "CRICKET", "Compact Car", "2022-01-01", "2023-09-30", "06:00:00" );
 		enterPermitInfo( "VCX1SE", "Special event", "V", null, "9194789124", "PROFX", "Handicap", "2023-01-01", "2023-11-15", "06:00:00" );
+
+		// CITATION 
+		
+
+
+       //enters in citation 1
+       // enterCitation ( final String CitationDate, final double Fee, final String PaymentStatus,
+       //     final String CitationTime, final int CitationNumber, final String Category, final String LotName,
+       //     final String LicenseNum )
+       
+       enterCitation ("2024-01-01", 40, "PAID", "08:00:00", "NP1", "No Permit", "Dan Allen Parking Deck", "VAN-9910");
+    //    enterCitation ("2023-10-01", 30.0, "DUE", "08:00:00", "EP1", "Expired Permit", "Poulton Lot", "CRICKET");
 	}
 
 }
