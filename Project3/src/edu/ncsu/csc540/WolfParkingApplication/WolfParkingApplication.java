@@ -1175,11 +1175,11 @@ public class WolfParkingApplication {
             + "FOREIGN KEY(LicenseNum) REFERENCES Vehicle (LicenseNum) ON UPDATE CASCADE"
             + ");" );
 
-            // Creating Maintain table
-            statement.executeUpdate( "CREATE TABLE Maintain (" + " CitationNumber INTEGER NOT NULL,"
-            + " SecurityID INTEGER NOT NULL," + " PRIMARY KEY (CitationNumber, SecurityID),"
-            + " FOREIGN KEY(CitationNumber) REFERENCES Citation (CitationNumber) ON UPDATE CASCADE,"
-            + " FOREIGN KEY(SecurityID) REFERENCES Security (SecurityID) ON UPDATE CASCADE" + ");" );
+            // // Creating Maintain table
+            // statement.executeUpdate( "CREATE TABLE Maintain (" + " CitationNumber INTEGER NOT NULL,"
+            // + " SecurityID INTEGER NOT NULL," + " PRIMARY KEY (CitationNumber, SecurityID),"
+            // + " FOREIGN KEY(CitationNumber) REFERENCES Citation (CitationNumber) ON UPDATE CASCADE,"
+            // + " FOREIGN KEY(SecurityID) REFERENCES Security (SecurityID) ON UPDATE CASCADE" + ");" );
 		}
         catch ( SQLException e ) {
             System.out.println( "Error message" );
@@ -1195,6 +1195,7 @@ public class WolfParkingApplication {
 		enterDriver("9194789124", "V", "Charles Xavier");
 
 		enterLot("Poulton Deck", "1021 Main Campus Dr, Raleigh, NC, 27606");
+		enterLot("Poulton Lot", "1021 Main Campus Dr, Raleigh, NC, 27606");
 		enterLot("Partners Way Deck", "851 Partners Way, Raleigh, NC, 27606");
 		enterLot("Dan Allen Parking Deck", "110 Dan Allen Dr, Raleigh, NC, 27607");
 
@@ -1212,7 +1213,7 @@ public class WolfParkingApplication {
 		enterZone ("A", "Partners Way Deck");
 		enterZone ("AS", "Dan Allen Parking Deck");
 
-		//LOT NAME MIGHT NEED TO GO IN HERE
+		// LOT NAME MIGHT NEED TO GO IN HERE
 		enterPermitInfo( "VSBF1C", "Commuter", "V", null, "7729119111",  "SBF", "Regular", "2023-01-01", "2024-01-01", "06:00:00" );
 		enterPermitInfo( "EJC1R", "Residential", "A", null, "266399121", "Clay1", "Electric", "2010-01-01", "2030-01-01", "06:00:00" );
 		enterPermitInfo( "EJH2C", "Commuter", "A", null, "366399121", "Hicks1", "Regular", "2023-01-01", "2024-01-01", "06:00:00" );
@@ -1220,17 +1221,9 @@ public class WolfParkingApplication {
 		enterPermitInfo( "SST1R", "Residential", "AS", null, "122765234", "CRICKET", "Compact Car", "2022-01-01", "2023-09-30", "06:00:00" );
 		enterPermitInfo( "VCX1SE", "Special event", "V", null, "9194789124", "PROFX", "Handicap", "2023-01-01", "2023-11-15", "06:00:00" );
 
-		// CITATION 
-		
-
-
-       //enters in citation 1
-       // enterCitation ( final String CitationDate, final double Fee, final String PaymentStatus,
-       //     final String CitationTime, final int CitationNumber, final String Category, final String LotName,
-       //     final String LicenseNum )
-       
+		// CITATION        
        enterCitation ("2024-01-01", 40, "PAID", "08:00:00", "NP1", "No Permit", "Dan Allen Parking Deck", "VAN-9910");
-    //    enterCitation ("2023-10-01", 30.0, "DUE", "08:00:00", "EP1", "Expired Permit", "Poulton Lot", "CRICKET");
+       enterCitation ("2023-10-01", 30, "DUE", "08:00:00", "EP1", "Expired Permit", "Poulton Lot", "CRICKET"); // "Poulton Lot" or "Poulton Deck"
 	}
 
 }
