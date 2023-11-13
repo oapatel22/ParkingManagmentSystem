@@ -114,6 +114,17 @@ public class WolfParkingApplication {
         close();
     }
 
+    public static void enterSecurity (final Integer securityID) {
+        try {
+            // Inserting data into Security table
+            statement.executeUpdate( "INSERT INTO Security (SecurityID) VALUES" + "(" + securityID + ");" );
+        }
+        catch ( SQLException e ) {
+            System.out.println( "Error message" );
+        }
+
+    }
+
     // INFORMATION PROCESSING:
 
     /**
@@ -900,7 +911,7 @@ public class WolfParkingApplication {
      * @param Fee
      *            the new fee for the updated citation entry
      */
-    public static void updateCitation ( final int CitationNumber, final String Category, final double Fee ) {
+    public static void updateCitation ( final int CitationNumber, final String Category, final double Fee ) { // FIX
         try {
             // Updating Citation entry with existing CitationNumber
             statement.executeUpdate( "Update Citation SET Fee = " + Fee + ", Category = '" + Category
@@ -1417,6 +1428,10 @@ public class WolfParkingApplication {
     }
 
     private static void populateTables () {
+        enterSecurity (1);
+        enterSecurity (2);
+        enterSecurity (3);
+
         enterDriver( "7729119111", "V", "Sam BankmanFried" );
         enterDriver( "266399121", "E", "John Clay" );
         enterDriver( "366399121", "E", "Julia Hicks" );
@@ -1443,6 +1458,11 @@ public class WolfParkingApplication {
         enterZone( "A", "Partners Way Deck" );
         enterZone( "AS", "Dan Allen Parking Deck" );
 
+        // spaces
+        enterSpace (1, "Poulton Deck", "regular", "available");
+        enterSpace (2, "Partners Way Deck", "compact car", "not available");
+        enterSpace (3, "Dan Allen Parking Deck", "electric", "available");
+
         // LOT NAME MIGHT NEED TO GO IN HERE
         enterPermitInfo( "VSBF1C", "Commuter", "V", null, "7729119111", "SBF", "Regular", "2023-01-01", "2024-01-01",
                 "06:00:00" );
@@ -1464,6 +1484,8 @@ public class WolfParkingApplication {
                                                                                                                  // or
                                                                                                                  // "Poulton
                                                                                                                  // Deck"
+
+        
     }
 
 }
