@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Scanner;
 
 public class WolfParkingApplication {
 
@@ -20,7 +21,56 @@ public class WolfParkingApplication {
 
 	public static void main(final String[] args) {
 
+		Scanner scnr = new Scanner(System.in);
 		System.out.println("Welcome to the WolfParking Managment System!");
+		System.out.println("1) Information processing");
+		System.out.println("2) Maintaining permits and vehicle information for each driver");
+		System.out.println("3) Generating and maintaining citations");
+		System.out.println("4) Reports");
+		System.out.print("Select the major task you want to perform: ");
+		String majorTask = scnr.next();
+		switch (majorTask) {
+			case "1":
+				System.out.println("You selected 1");
+				break;
+			case "2":
+				System.out.println("You selected 2");
+				break;
+			case "3":
+				System.out.println("You selected 3");
+				break;
+			case "4":
+				System.out.println("1) Citation Report By Time");
+				System.out.println("2) Get Zones");
+				System.out.println("3) Get Current Violations");
+				System.out.println("4) Get Employee Zone");
+				System.out.println("5) Get Permit Information");
+				System.out.println("6) Get Available Spaces");
+				System.out.print("Select the operation you want to perform: ");
+				String operation = scnr.next();
+				switch (operation) {
+				case "1":
+					System.out.println("You selected 1");
+					break;
+				case "2":
+					System.out.println("You selected 2");
+					break;
+				case "3":
+					getCurrentViolation();
+					break;
+				case "4":
+					System.out.println("You selected 4");
+					break;
+				case "5":
+					System.out.println("You selected 5");
+					break;
+				case "6":
+					System.out.println("You selected 6");
+					break;
+				}
+				break;
+		}
+		
 		initialize();
 
 		preloadDemoData();
@@ -71,7 +121,7 @@ public class WolfParkingApplication {
 		getPermitInformation("122765234");
 		getAvailableSpaces("Poulton Lot");
 		*/
-
+		scnr.close();
 		close();
 	}
 
