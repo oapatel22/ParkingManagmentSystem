@@ -19,6 +19,10 @@ public class WolfParkingApplication {
 
     public static void main ( final String[] args ) {
 
+        initialize();
+
+        preloadDemoData();
+
         Scanner scnr = new Scanner( System.in );
         System.out.println( "Welcome to the WolfParking Managment System!" );
         System.out.println( "1) Information processing" );
@@ -69,47 +73,6 @@ public class WolfParkingApplication {
                 break;
         }
 
-        initialize();
-
-        preloadDemoData();
-
-        // enterDriver("jbfjd", "S", "Dylan");
-        // getDriverInfo("jbfjd");
-        // updateDriverInformation("jbfjd", "V", "Dylan");
-        // deleteDriver("jbfjd");
-        // enterLot("LotName 1", "address 1");
-        // enterVehicle("LicenseNum 1", "2003", "fjbgj", "Black", "jjjjj");
-        // enterPermitInfo (1, "spaceType", "2023-05-12",
-        // "expDate", "jbfjd", "permitType", "expTime",
-        // "licenseNum", "zoneID", "LotName 1" );
-
-        // stithi starts : tasks and operations 3
-
-        // enterCitation( date, 10, "Unpaid", time, 1, "Invalid Permit",
-        // "LotName 1",
-        // "LicenseNum 1" );
-        // updateCitation( 1, "Expired Permit", 50 );
-        // enterCitation( date, 10, "Unpaid", time, 2, "Invalid Permit",
-        // "LotName 1",
-        // "LicenseNum 1" );
-        // deleteCitation( 2 );
-        // NEED TO CHECK // FIX
-        // checkParkingViolation( "LotName 1", "LicenseNum 1", date, time );
-        // payCitation( 1 );
-        // requestAppeal( 1 );
-        // stithi ends : tasks and operations 3
-
-        // enterZone ("zone 1", "LotName 1");
-        // getZones("LotName 1");
-        // getCurrentViolation ();
-
-        // Task 4
-        /*
-         * getCitationReportByTime("2023-10-02", "2024-10-01");
-         * getZones("Partners Way Deck"); getCurrentViolation();
-         * getEmployeeZone(); getPermitInformation("122765234");
-         * getAvailableSpaces("Poulton Lot");
-         */
         scnr.close();
         close();
     }
@@ -1464,17 +1427,31 @@ public class WolfParkingApplication {
         enterSpace (3, "Dan Allen Parking Deck", "electric", "available");
 
         // LOT NAME MIGHT NEED TO GO IN HERE
-        enterPermitInfo( "VSBF1C", "Commuter", "V", "Poulton Deck", "7729119111", "SBF", "Regular", "2023-01-01",
+        // enterPermitInfo( "VSBF1C", "Commuter", "V", "Poulton Deck", "7729119111", "SBF", "Regular", "2023-01-01",
+        //         "2024-01-01", "06:00:00" );
+        // enterPermitInfo( "EJC1R", "Residential", "A", "Partners Way Deck", "266399121", "Clay1", "Electric",
+        //         "2010-01-01", "2030-01-01", "06:00:00" );
+        // enterPermitInfo( "EJH2C", "Commuter", "A", "Partners Way Deck", "366399121", "Hicks1", "Regular", "2023-01-01",
+        //         "2024-01-01", "06:00:00" );
+        // enterPermitInfo( "EIG3C", "Commuter", "A", "Partners Way Deck", "466399121", "Garcia1", "Regular", "2023-01-01",
+        //         "2024-01-01", "06:00:00" );
+        // enterPermitInfo( "SST1R", "Residential", "AS", "Dan Allen Parking Deck", "122765234", "CRICKET", "Compact Car",
+        //         "2022-01-01", "2023-09-30", "06:00:00" );
+        // enterPermitInfo( "VCX1SE", "Special event", "V", "Poulton Deck", "9194789124", "PROFX", "Handicap",
+        //         "2023-01-01", "2023-11-15", "06:00:00" );
+
+        // CHANGE LATER
+        enterPermitInfo( "VSBF1C", "Commuter", "V", null, "7729119111", "SBF", "Regular", "2023-01-01",
                 "2024-01-01", "06:00:00" );
-        enterPermitInfo( "EJC1R", "Residential", "A", "Partners Way Deck", "266399121", "Clay1", "Electric",
+        enterPermitInfo( "EJC1R", "Residential", "A", null, "266399121", "Clay1", "Electric",
                 "2010-01-01", "2030-01-01", "06:00:00" );
-        enterPermitInfo( "EJH2C", "Commuter", "A", "Partners Way Deck", "366399121", "Hicks1", "Regular", "2023-01-01",
+        enterPermitInfo( "EJH2C", "Commuter", "A", null, "366399121", "Hicks1", "Regular", "2023-01-01",
                 "2024-01-01", "06:00:00" );
-        enterPermitInfo( "EIG3C", "Commuter", "A", "Partners Way Deck", "466399121", "Garcia1", "Regular", "2023-01-01",
+        enterPermitInfo( "EIG3C", "Commuter", "A", null, "466399121", "Garcia1", "Regular", "2023-01-01",
                 "2024-01-01", "06:00:00" );
-        enterPermitInfo( "SST1R", "Residential", "AS", "Dan Allen Parking Deck", "122765234", "CRICKET", "Compact Car",
+        enterPermitInfo( "SST1R", "Residential", "AS", null, "122765234", "CRICKET", "Compact Car",
                 "2022-01-01", "2023-09-30", "06:00:00" );
-        enterPermitInfo( "VCX1SE", "Special event", "V", "Poulton Deck", "9194789124", "PROFX", "Handicap",
+        enterPermitInfo( "VCX1SE", "Special event", "V", null, "9194789124", "PROFX", "Handicap",
                 "2023-01-01", "2023-11-15", "06:00:00" );
 
         // CITATION
