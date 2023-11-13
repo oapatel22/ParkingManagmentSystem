@@ -1444,18 +1444,18 @@ public class WolfParkingApplication {
         enterZone( "AS", "Dan Allen Parking Deck" );
 
         // LOT NAME MIGHT NEED TO GO IN HERE
-        enterPermitInfo( "VSBF1C", "Commuter", "V", null, "7729119111", "SBF", "Regular", "2023-01-01", "2024-01-01",
-                "06:00:00" );
-        enterPermitInfo( "EJC1R", "Residential", "A", null, "266399121", "Clay1", "Electric", "2010-01-01",
-                "2030-01-01", "06:00:00" );
-        enterPermitInfo( "EJH2C", "Commuter", "A", null, "366399121", "Hicks1", "Regular", "2023-01-01", "2024-01-01",
-                "06:00:00" );
-        enterPermitInfo( "EIG3C", "Commuter", "A", null, "466399121", "Garcia1", "Regular", "2023-01-01", "2024-01-01",
-                "06:00:00" );
-        enterPermitInfo( "SST1R", "Residential", "AS", null, "122765234", "CRICKET", "Compact Car", "2022-01-01",
-                "2023-09-30", "06:00:00" );
-        enterPermitInfo( "VCX1SE", "Special event", "V", null, "9194789124", "PROFX", "Handicap", "2023-01-01",
-                "2023-11-15", "06:00:00" );
+        enterPermitInfo( "VSBF1C", "Commuter", "V", "Poulton Deck", "7729119111", "SBF", "Regular", "2023-01-01",
+                "2024-01-01", "06:00:00" );
+        enterPermitInfo( "EJC1R", "Residential", "A", "Partners Way Deck", "266399121", "Clay1", "Electric",
+                "2010-01-01", "2030-01-01", "06:00:00" );
+        enterPermitInfo( "EJH2C", "Commuter", "A", "Partners Way Deck", "366399121", "Hicks1", "Regular", "2023-01-01",
+                "2024-01-01", "06:00:00" );
+        enterPermitInfo( "EIG3C", "Commuter", "A", "Partners Way Deck", "466399121", "Garcia1", "Regular", "2023-01-01",
+                "2024-01-01", "06:00:00" );
+        enterPermitInfo( "SST1R", "Residential", "AS", "Dan Allen Parking Deck", "122765234", "CRICKET", "Compact Car",
+                "2022-01-01", "2023-09-30", "06:00:00" );
+        enterPermitInfo( "VCX1SE", "Special event", "V", "Poulton Deck", "9194789124", "PROFX", "Handicap",
+                "2023-01-01", "2023-11-15", "06:00:00" );
 
         // CITATION
         enterCitation( "2024-01-01", 40, "PAID", "08:00:00", "NP1", "No Permit", "Dan Allen Parking Deck", "VAN-9910" );
