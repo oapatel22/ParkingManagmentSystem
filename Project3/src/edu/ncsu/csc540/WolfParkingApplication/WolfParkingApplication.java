@@ -77,7 +77,7 @@ public class WolfParkingApplication {
         close();
     }
 
-    public static void enterSecurity (final Integer securityID) {
+    public static void enterSecurity ( final Integer securityID ) {
         try {
             // Inserting data into Security table
             statement.executeUpdate( "INSERT INTO Security (SecurityID) VALUES" + "(" + securityID + ");" );
@@ -874,15 +874,29 @@ public class WolfParkingApplication {
      * @param Fee
      *            the new fee for the updated citation entry
      */
-    public static void updateCitation ( final int CitationNumber, final String Category, final double Fee ) { // FIX
-        try {
-            // Updating Citation entry with existing CitationNumber
-            statement.executeUpdate( "Update Citation SET Fee = " + Fee + ", Category = '" + Category
-                    + "' WHERE CitationNumber = " + CitationNumber + ";" );
+    public static void updateCitation ( final int citationNumber, final String category, final double fee ) {
+        if ( category.length() != 0 || category != null ) {
+            try {
+                // Updating Citation entry category
+                statement.executeUpdate( "Update Citation SET Category = '" + category + "' WHERE CitationNumber = "
+                        + citationNumber + ";" );
+            }
+            catch ( SQLException e ) {
+                System.out.println( "Error message" );
+            }
         }
-        catch ( SQLException e ) {
-            System.out.println( "Error message" );
+
+        if ( fee > 0 ) {
+            try {
+                // Updating Citation entry category
+                statement.executeUpdate(
+                        "Update Citation SET Fee = '" + fee + "' WHERE CitationNumber = " + citationNumber + ";" );
+            }
+            catch ( SQLException e ) {
+                System.out.println( "Error message" );
+            }
         }
+
     }
 
     /**
@@ -1159,7 +1173,8 @@ public class WolfParkingApplication {
             // "CREATE TABLE Driver (" + " DriverID VARCHAR(20) NOT NULL," + "
             // Name
             // VARCHAR(36) NOT NULL,"
-            // + " Status VARCHAR(1) NOT NULL," + " PRIMARY KEY (DriverID)" +
+            // + " Status VARCHAR(1) NOT NULL CHECK (Status IN ('S', 'E',
+            // 'V'))," + " PRIMARY KEY (DriverID)" +
             // ");" );
 
             // // Creating ParkingLot table
@@ -1180,7 +1195,8 @@ public class WolfParkingApplication {
             // // Creating Zone table
             // statement.executeUpdate( "CREATE TABLE Zone (" + " ZoneID
             // VARCHAR(2) NOT
-            // NULL,"
+            // NULL CHECK (ZoneID IN ('A', 'B', 'C', 'D', 'AS', 'BS', 'CS',
+            // 'DS', 'V')),"
             // + " LotName VARCHAR(128) NOT NULL," + " PRIMARY KEY (ZoneID,
             // LotName),"
             // + " FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON
@@ -1192,7 +1208,8 @@ public class WolfParkingApplication {
             // INTEGER NOT
             // NULL,"
             // + " LotName VARCHAR(128) NOT NULL," + " SpaceType VARCHAR(20) NOT
-            // NULL,"
+            // NULL CHECK (SpaceType IN ('electric', 'handicap', 'compact car',
+            // 'regular')),"
             // + " AvailabilityStatus VARCHAR(20) NOT NULL," + " PRIMARY KEY
             // (SpaceNumber,
             // LotName),"
@@ -1211,7 +1228,8 @@ public class WolfParkingApplication {
             // ExpTime TIME
             // NOT NULL,"
             // + " SpaceType VARCHAR(20) NOT NULL," + " PermitType VARCHAR(20)
-            // NOT NULL,"
+            // NOT NULL CHECK (PermitType IN ('residential', 'commuter', 'peak
+            // hours', 'special event, 'Park & Ride')),"
             // + " PRIMARY KEY (PermitID),"
             // + " FOREIGN KEY(DriverID) REFERENCES Driver (DriverID) ON UPDATE
             // CASCADE ON
@@ -1235,7 +1253,13 @@ public class WolfParkingApplication {
             // + "CitationDate DATE NOT NULL, Fee DOUBLE,"
             // + "PaymentStatus VARCHAR(32) NOT NULL, CitationTime TIME NOT
             // NULL,"
-            // + "Category VARCHAR(128) NOT NULL, PRIMARY KEY(CitationNumber),"
+            // + "Category VARCHAR(128) NOT NULL,CHECK ((Category = 'Invalid
+            // Permit' AND Fee = 25) OR(Category = 'Expired Permit' AND Fee =
+            // 30) OR (Category = 'No Permit' AND Fee = 40) OR (Category =
+            // 'Invalid
+            // Permit' AND Fee = 12.5) OR(Category = 'Expired Permit' AND Fee =
+            // 15) OR (Category = 'No Permit' AND Fee = 20))," + "PRIMARY
+            // KEY(CitationNumber),"
             // + "FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON UPDATE
             // CASCADE,"
             // + "FOREIGN KEY(LicenseNum) REFERENCES Vehicle (LicenseNum) ON
@@ -1391,9 +1415,9 @@ public class WolfParkingApplication {
     }
 
     private static void populateTables () {
-        enterSecurity (1);
-        enterSecurity (2);
-        enterSecurity (3);
+        enterSecurity( 1 );
+        enterSecurity( 2 );
+        enterSecurity( 3 );
 
         enterDriver( "7729119111", "V", "Sam BankmanFried" );
         enterDriver( "266399121", "E", "John Clay" );
@@ -1422,37 +1446,43 @@ public class WolfParkingApplication {
         enterZone( "AS", "Dan Allen Parking Deck" );
 
         // spaces
-        enterSpace (1, "Poulton Deck", "regular", "available");
-        enterSpace (2, "Partners Way Deck", "compact car", "not available");
-        enterSpace (3, "Dan Allen Parking Deck", "electric", "available");
+        enterSpace( 1, "Poulton Deck", "regular", "available" );
+        enterSpace( 2, "Partners Way Deck", "compact car", "not available" );
+        enterSpace( 3, "Dan Allen Parking Deck", "electric", "available" );
 
         // LOT NAME MIGHT NEED TO GO IN HERE
-        // enterPermitInfo( "VSBF1C", "Commuter", "V", "Poulton Deck", "7729119111", "SBF", "Regular", "2023-01-01",
-        //         "2024-01-01", "06:00:00" );
-        // enterPermitInfo( "EJC1R", "Residential", "A", "Partners Way Deck", "266399121", "Clay1", "Electric",
-        //         "2010-01-01", "2030-01-01", "06:00:00" );
-        // enterPermitInfo( "EJH2C", "Commuter", "A", "Partners Way Deck", "366399121", "Hicks1", "Regular", "2023-01-01",
-        //         "2024-01-01", "06:00:00" );
-        // enterPermitInfo( "EIG3C", "Commuter", "A", "Partners Way Deck", "466399121", "Garcia1", "Regular", "2023-01-01",
-        //         "2024-01-01", "06:00:00" );
-        // enterPermitInfo( "SST1R", "Residential", "AS", "Dan Allen Parking Deck", "122765234", "CRICKET", "Compact Car",
-        //         "2022-01-01", "2023-09-30", "06:00:00" );
-        // enterPermitInfo( "VCX1SE", "Special event", "V", "Poulton Deck", "9194789124", "PROFX", "Handicap",
-        //         "2023-01-01", "2023-11-15", "06:00:00" );
+        // enterPermitInfo( "VSBF1C", "Commuter", "V", "Poulton Deck",
+        // "7729119111", "SBF", "Regular", "2023-01-01",
+        // "2024-01-01", "06:00:00" );
+        // enterPermitInfo( "EJC1R", "Residential", "A", "Partners Way Deck",
+        // "266399121", "Clay1", "Electric",
+        // "2010-01-01", "2030-01-01", "06:00:00" );
+        // enterPermitInfo( "EJH2C", "Commuter", "A", "Partners Way Deck",
+        // "366399121", "Hicks1", "Regular", "2023-01-01",
+        // "2024-01-01", "06:00:00" );
+        // enterPermitInfo( "EIG3C", "Commuter", "A", "Partners Way Deck",
+        // "466399121", "Garcia1", "Regular", "2023-01-01",
+        // "2024-01-01", "06:00:00" );
+        // enterPermitInfo( "SST1R", "Residential", "AS", "Dan Allen Parking
+        // Deck", "122765234", "CRICKET", "Compact Car",
+        // "2022-01-01", "2023-09-30", "06:00:00" );
+        // enterPermitInfo( "VCX1SE", "Special event", "V", "Poulton Deck",
+        // "9194789124", "PROFX", "Handicap",
+        // "2023-01-01", "2023-11-15", "06:00:00" );
 
         // CHANGE LATER
-        enterPermitInfo( "VSBF1C", "Commuter", "V", null, "7729119111", "SBF", "Regular", "2023-01-01",
-                "2024-01-01", "06:00:00" );
-        enterPermitInfo( "EJC1R", "Residential", "A", null, "266399121", "Clay1", "Electric",
-                "2010-01-01", "2030-01-01", "06:00:00" );
-        enterPermitInfo( "EJH2C", "Commuter", "A", null, "366399121", "Hicks1", "Regular", "2023-01-01",
-                "2024-01-01", "06:00:00" );
-        enterPermitInfo( "EIG3C", "Commuter", "A", null, "466399121", "Garcia1", "Regular", "2023-01-01",
-                "2024-01-01", "06:00:00" );
-        enterPermitInfo( "SST1R", "Residential", "AS", null, "122765234", "CRICKET", "Compact Car",
-                "2022-01-01", "2023-09-30", "06:00:00" );
-        enterPermitInfo( "VCX1SE", "Special event", "V", null, "9194789124", "PROFX", "Handicap",
-                "2023-01-01", "2023-11-15", "06:00:00" );
+        enterPermitInfo( "VSBF1C", "Commuter", "V", null, "7729119111", "SBF", "Regular", "2023-01-01", "2024-01-01",
+                "06:00:00" );
+        enterPermitInfo( "EJC1R", "Residential", "A", null, "266399121", "Clay1", "Electric", "2010-01-01",
+                "2030-01-01", "06:00:00" );
+        enterPermitInfo( "EJH2C", "Commuter", "A", null, "366399121", "Hicks1", "Regular", "2023-01-01", "2024-01-01",
+                "06:00:00" );
+        enterPermitInfo( "EIG3C", "Commuter", "A", null, "466399121", "Garcia1", "Regular", "2023-01-01", "2024-01-01",
+                "06:00:00" );
+        enterPermitInfo( "SST1R", "Residential", "AS", null, "122765234", "CRICKET", "Compact Car", "2022-01-01",
+                "2023-09-30", "06:00:00" );
+        enterPermitInfo( "VCX1SE", "Special event", "V", null, "9194789124", "PROFX", "Handicap", "2023-01-01",
+                "2023-11-15", "06:00:00" );
 
         // CITATION
         enterCitation( "2024-01-01", 40, "PAID", "08:00:00", "NP1", "No Permit", "Dan Allen Parking Deck", "VAN-9910" );
@@ -1462,7 +1492,6 @@ public class WolfParkingApplication {
                                                                                                                  // "Poulton
                                                                                                                  // Deck"
 
-        
     }
 
 }
