@@ -41,16 +41,153 @@ public class WolfParkingApplication {
                 break;
             }
             switch (majorTask) {
-                case "1":
-                    System.out.println("You selected 1");
+                case "1": // 1) Information processing
+                	System.out.println("1) Enter Driver Information");
+                    System.out.println("2) Update Driver Information");
+                    System.out.println("3) Delete Driver Information");
+                    System.out.println("4) Enter Lot Information");
+                    System.out.println("5) Update Lot Information");
+                    System.out.println("6) Delete Parking Lot Information");
+                    System.out.println("7) Enter Zone Information");
+                    System.out.println("8) Update Zone Information");
+                    System.out.println("9) Delete Zone Information");
+                    System.out.println("10) Enter Space Information");
+                    System.out.println("11) Update Space Information");
+                    System.out.println("12) Delete Space Information");
+                    System.out.println("13) Assign Zone To Lot");
+                    System.out.println("14) Assign Space To Lot");
+                    System.out.println("15) Assign Type To Space");
+                    System.out.println("16) Update Payment Status");
+                    System.out.print("Select the operation you want to perform: ");
+                    String operation1 = scnr.next();
+                    switch (operation1) {
+                        case "1":
+                        	enterDriver();
+                            break;
+                        case "2":
+                        	updateDriverInformation();
+                            break;
+                        case "3":
+                        	deleteDriver();
+                            break;
+                        case "4":
+                        	enterLot();
+                            break;
+                        case "5":
+                        	updateLotInformation();
+                            break;
+                        case "6":
+                        	deleteLot();
+                            break;
+                        case "7":
+                        	enterZone();
+                            break;
+                        case "8":
+                        	updateZone();
+                            break;
+                        case "9":
+                        	deleteZone();
+                            break;
+                        case "10":
+                        	enterSpace();
+                            break;
+                        case "11":
+                        	updateSpace();
+                            break;
+                        case "12":
+                        	deleteSpace();
+                            break;
+                        case "13":
+                        	assignZoneToLot();
+                            break;
+                        case "14":
+                        	assignSpaceToLot();
+                            break;
+                        case "15":
+                        	assignTypeToSpace();
+                            break;
+                        case "16":
+                        	updatePaymentStatus();
+                            break;
+                    }
                     break;
-                case "2":
-                    System.out.println("You selected 2");
+                case "2": // 2) Maintaining permits and vehicle information for each driver
+                	System.out.println("1) Get Driver Info");
+                    System.out.println("2) Enter Permit Info");
+                    System.out.println("3) Update Permit Info");
+                    System.out.println("4) Delete Permit Info");
+                    System.out.println("5) Assign Permit Info");
+                    System.out.println("6) ?");
+                    System.out.println("7) Enter Vehicle Information");
+                    System.out.println("8) Update Vehicle Information");
+                    System.out.println("9) Delete Vehicle Information");
+                    System.out.println("10) ?");
+                    System.out.print("Select the operation you want to perform: ");
+                    String operation2 = scnr.next();
+                    switch (operation2) {
+                        case "1":
+                        	getDriverInfo();
+                            break;
+                        case "2":
+                        	enterPermitInfo();
+                            break;
+                        case "3":
+                        	updatePermit();
+                            break;
+                        case "4":
+                        	deletePermit();
+                            break;
+                        case "5":
+                        	assignPermit();
+                            break;
+                        case "6":
+                        	getPermitInfo(); // don't need this right?
+                            break;
+                        case "7":
+                        	enterVehicle();
+                            break;
+                        case "8":
+                        	updateVehicle();
+                            break;
+                        case "9":
+                        	deleteVehicle();
+                            break;
+                        case "10":
+                        	assignVehicle(); // don't need this right?
+                            break;
+                    }
                     break;
-                case "3":
-                    System.out.println("You selected 3");
+                case "3": // 3) Generating and maintaining citations
+                	System.out.println("1) Enter Citation Information");
+                    System.out.println("2) Update Citation Information");
+                    System.out.println("3) Delete Citation Information");
+                    System.out.println("4) Check Parking Violation");
+                    System.out.println("5) Pay Citation");
+                    System.out.println("6) Request Appeal");
+                    System.out.print("Select the operation you want to perform: ");
+                    String operation3 = scnr.next();
+                    switch (operation3) {
+                        case "1":
+                        	enterCitation();
+                            break;
+                        case "2":
+                        	updateCitation();
+                            break;
+                        case "3":
+                        	deleteCitation();
+                            break;
+                        case "4":
+                        	checkParkingViolation();
+                            break;
+                        case "5":
+                        	payCitation();
+                            break;
+                        case "6":
+                        	requestAppeal();
+                            break;
+                    }
                     break;
-                case "4":
+                case "4": // 4) Reports
                     System.out.println("1) Citation Report By Time");
                     System.out.println("2) Get Zones");
                     System.out.println("3) Get Current Violations");
@@ -58,28 +195,25 @@ public class WolfParkingApplication {
                     System.out.println("5) Get Permit Information");
                     System.out.println("6) Get Available Spaces");
                     System.out.print("Select the operation you want to perform: ");
-                    String operation = scnr.next();
-                    switch (operation) {
+                    String operation4 = scnr.next();
+                    switch (operation4) {
                         case "1":
-                            System.out.print(
-                                    "Enter start and end date of Citation in the format (YYYY-MM-DD, YYYY-MM-DD):");
                             getCitationReportByTime();
-                            System.out.println("IT WORKS");
                             break;
                         case "2":
-                            System.out.println("You selected 2");
+                        	getZones();
                             break;
                         case "3":
                             getCurrentViolation();
                             break;
                         case "4":
-                            System.out.println("You selected 4");
+                        	getEmployeeZone();
                             break;
                         case "5":
-                            System.out.println("You selected 5");
+                        	getPermitInformation();
                             break;
                         case "6":
-                            System.out.println("You selected 6");
+                        	getAvailableSpaces();
                             break;
                     }
                     break;
