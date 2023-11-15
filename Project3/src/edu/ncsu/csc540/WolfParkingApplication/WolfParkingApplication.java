@@ -973,7 +973,7 @@ public class WolfParkingApplication {
      * method uses a Scanner
      * to read this information from the console and then updates the Citation table
      * in the database accordingly.
-    */
+     */
     public static void updatePaymentStatus() {
         Scanner scnr = new Scanner(System.in);
         try {
@@ -1623,67 +1623,137 @@ public class WolfParkingApplication {
 
     // Task and operations 4: Reports
 
+    // /**
+    // * Returns a table titled TotalCitations with the name of the parking lot and
+    // * the associated number of citation for each lot within a given time frame
+    // *
+    // * @param StartDate the earliest the citation was given
+    // * @param EndDate the latest the citation was given
+    // */
+    // public static void getCitationReportByTime() {
+
+    // Scanner line = new Scanner(System.in);
+    // String input = line.nextLine();
+    // Scanner attr = new Scanner(input);
+    // attr.useDelimiter(", ");
+    // final String StartDate = attr.next();
+
+    // System.out.println("state: " + StartDate);
+
+    // final String EndDate = attr.next();
+    // System.out.println("end: " + EndDate);
+    // attr.close();
+    // line.close();
+
+    // try {
+    // ResultSet rs = statement.executeQuery(
+    // "SELECT p.LotName, COUNT(c.CitationNumber) AS TotalCitations FROM ParkingLot
+    // p LEFT JOIN Citation c ON p.LotName = c.LotName AND c.CitationDate BETWEEN '"
+    // + StartDate + "' AND '" + EndDate + "' GROUP BY p.LotName");
+    // String s = "";
+    // StringBuilder sb = new StringBuilder(s);
+
+    // while (rs.next()) {
+    // sb.append(rs.getString("LotName"));
+    // sb.append(" ");
+    // sb.append(rs.getString("TotalCitations"));
+    // sb.append("\n");
+    // }
+    // System.out.println(sb.toString());
+    // } catch (SQLException e) {
+    // System.out.println("Error message");
+    // }
+    // }
+
     /**
-     * Returns a table titled TotalCitations with the name of the parking lot and
-     * the associated number of citation for each lot within a given time frame
-     *
-     * @param StartDate the earliest the citation was given
-     * @param EndDate   the latest the citation was given
+     * Prompts the user to enter a start date and an end date, then retrieves and
+     * displays a report
+     * of the total number of citations for each parking lot within the specified
+     * time frame. The method uses a Scanner
+     * to read the dates from the console and then queries the database to generate
+     * the report.
      */
     public static void getCitationReportByTime() {
-
-        Scanner line = new Scanner(System.in);
-        String input = line.nextLine();
-        Scanner attr = new Scanner(input);
-        attr.useDelimiter(", ");
-        final String StartDate = attr.next();
-
-        System.out.println("state: " + StartDate);
-
-        final String EndDate = attr.next();
-        System.out.println("end: " + EndDate);
-        attr.close();
-        line.close();
-
+        Scanner scnr = new Scanner(System.in);
         try {
+            System.out.println("Enter the start and end dates for the report (StartDate, EndDate):");
+            String input = scnr.nextLine();
+            String[] dates = input.split(",");
+
+            if (dates.length < 2) {
+                System.out.println("Invalid input format. Please enter StartDate and EndDate separated by a comma.");
+                return;
+            }
+
+            final String startDate = dates[0].trim();
+            final String endDate = dates[1].trim();
+
             ResultSet rs = statement.executeQuery(
                     "SELECT p.LotName, COUNT(c.CitationNumber) AS TotalCitations FROM ParkingLot p LEFT JOIN Citation c ON p.LotName = c.LotName AND c.CitationDate BETWEEN '"
-                            + StartDate + "' AND '" + EndDate + "' GROUP BY p.LotName");
-            String s = "";
-            StringBuilder sb = new StringBuilder(s);
+                            + startDate + "' AND '" + endDate + "' GROUP BY p.LotName");
+            StringBuilder sb = new StringBuilder();
 
             while (rs.next()) {
-                sb.append(rs.getString("LotName"));
-                sb.append(" ");
-                sb.append(rs.getString("TotalCitations"));
-                sb.append("\n");
+                sb.append(rs.getString("LotName")).append(" ");
+                sb.append(rs.getString("TotalCitations")).append("\n");
             }
             System.out.println(sb.toString());
         } catch (SQLException e) {
-            System.out.println("Error message");
+            System.out.println("Error message: " + e.getMessage());
+        } finally {
+            scnr.close();
         }
     }
 
+    // /**
+    // * Return a list of zones in a given Parking Lot
+    // *
+    // * @param LotName the name of the parking lot
+    // */
+    // public static void getZones(final String LotName) {
+    // try {
+    // ResultSet rs = statement.executeQuery("SELECT * FROM Zone WHERE LotName = '"
+    // + LotName + "';");
+    // String s = "";
+    // StringBuilder sb = new StringBuilder(s);
+
+    // while (rs.next()) {
+    // sb.append(rs.getString("ZoneID"));
+    // sb.append(" ");
+    // sb.append(rs.getString("LotName"));
+    // sb.append("\n");
+    // }
+    // System.out.println(sb.toString());
+    // } catch (SQLException e) {
+    // System.out.println("Error message");
+    // }
+    // }
+
     /**
-     * Return a list of zones in a given Parking Lot
-     *
-     * @param LotName the name of the parking lot
+     * Prompts the user to enter the name of a parking lot and then retrieves and
+     * displays a list of zones
+     * within that parking lot. The method uses a Scanner to read the parking lot
+     * name from the console and then queries
+     * the Zone table in the database to find the zones in the specified lot.
      */
-    public static void getZones(final String LotName) {
+    public static void getZones() {
+        Scanner scnr = new Scanner(System.in);
         try {
-            ResultSet rs = statement.executeQuery("SELECT * FROM Zone WHERE LotName = '" + LotName + "';");
-            String s = "";
-            StringBuilder sb = new StringBuilder(s);
+            System.out.println("Enter the name of the parking lot to find its zones:");
+            String lotName = scnr.nextLine().trim();
+
+            ResultSet rs = statement.executeQuery("SELECT * FROM Zone WHERE LotName = '" + lotName + "';");
+            StringBuilder sb = new StringBuilder();
 
             while (rs.next()) {
-                sb.append(rs.getString("ZoneID"));
-                sb.append(" ");
-                sb.append(rs.getString("LotName"));
-                sb.append("\n");
+                sb.append(rs.getString("ZoneID")).append(" ");
+                sb.append(rs.getString("LotName")).append("\n");
             }
             System.out.println(sb.toString());
         } catch (SQLException e) {
-            System.out.println("Error message");
+            System.out.println("Error message: " + e.getMessage());
+        } finally {
+            scnr.close();
         }
     }
 
@@ -1727,58 +1797,125 @@ public class WolfParkingApplication {
         }
     }
 
+    // /**
+    // * Gets the permit associated with a particular driver
+    // *
+    // * @param DriverId the id of the driver to get their permit info
+    // */
+    // public static void getPermitInformation(final String DriverId) {
+    // try {
+    // ResultSet rs = statement.executeQuery("SELECT * From Permit WHERE
+    // Permit.DriverId = '" + DriverId + "';");
+    // String s = "";
+    // StringBuilder sb = new StringBuilder(s);
+
+    // while (rs.next()) {
+    // sb.append(rs.getString("PermitID"));
+    // sb.append(" ");
+    // sb.append(rs.getString("DriverID"));
+    // sb.append(" ");
+    // sb.append(rs.getString("LicenseNum"));
+    // sb.append(" ");
+    // sb.append(rs.getString("ZoneID"));
+    // sb.append(" ");
+    // sb.append(rs.getString("LotName"));
+    // sb.append(" ");
+    // sb.append(rs.getString("StartDate"));
+    // sb.append(" ");
+    // sb.append(rs.getString("ExpDate"));
+    // sb.append(" ");
+    // sb.append(rs.getString("ExpTime"));
+    // sb.append(" ");
+    // sb.append(rs.getString("SpaceType"));
+    // sb.append(" ");
+    // sb.append(rs.getString("PermitType"));
+    // sb.append("\n");
+
+    // }
+    // System.out.println(sb.toString());
+    // } catch (SQLException e) {
+    // System.out.println("Error message");
+    // }
+    // }
+
     /**
-     * Gets the permit associated with a particular driver
-     *
-     * @param DriverId the id of the driver to get their permit info
+     * Prompts the user to enter the ID of a driver and then retrieves and displays
+     * the permit information
+     * associated with that driver. The method uses a Scanner to read the driver ID
+     * from the console and then queries
+     * the Permit table in the database to find the relevant permit details.
      */
-    public static void getPermitInformation(final String DriverId) {
+    public static void getPermitInformation() {
+        Scanner scnr = new Scanner(System.in);
         try {
-            ResultSet rs = statement.executeQuery("SELECT * From Permit WHERE Permit.DriverId = '" + DriverId + "';");
-            String s = "";
-            StringBuilder sb = new StringBuilder(s);
+            System.out.println("Enter the driver ID to get their permit information:");
+            String driverId = scnr.nextLine().trim();
+
+            ResultSet rs = statement.executeQuery("SELECT * From Permit WHERE Permit.DriverId = '" + driverId + "';");
+            StringBuilder sb = new StringBuilder();
 
             while (rs.next()) {
-                sb.append(rs.getString("PermitID"));
-                sb.append(" ");
-                sb.append(rs.getString("DriverID"));
-                sb.append(" ");
-                sb.append(rs.getString("LicenseNum"));
-                sb.append(" ");
-                sb.append(rs.getString("ZoneID"));
-                sb.append(" ");
-                sb.append(rs.getString("LotName"));
-                sb.append(" ");
-                sb.append(rs.getString("StartDate"));
-                sb.append(" ");
-                sb.append(rs.getString("ExpDate"));
-                sb.append(" ");
-                sb.append(rs.getString("ExpTime"));
-                sb.append(" ");
-                sb.append(rs.getString("SpaceType"));
-                sb.append(" ");
-                sb.append(rs.getString("PermitType"));
-                sb.append("\n");
-
+                sb.append(rs.getString("PermitID")).append(" ");
+                sb.append(rs.getString("DriverID")).append(" ");
+                sb.append(rs.getString("LicenseNum")).append(" ");
+                sb.append(rs.getString("ZoneID")).append(" ");
+                sb.append(rs.getString("LotName")).append(" ");
+                sb.append(rs.getString("StartDate")).append(" ");
+                sb.append(rs.getString("ExpDate")).append(" ");
+                sb.append(rs.getString("ExpTime")).append(" ");
+                sb.append(rs.getString("SpaceType")).append(" ");
+                sb.append(rs.getString("PermitType")).append("\n");
             }
             System.out.println(sb.toString());
         } catch (SQLException e) {
-            System.out.println("Error message");
+            System.out.println("Error message: " + e.getMessage());
+        } finally {
+            scnr.close();
         }
     }
 
+    // /**
+    // * Gets the number of available spaces within a particular Parking Lot
+    // *
+    // * @param LotName the name of the lot to find the number of available spaces
+    // for
+    // */
+    // public static void getAvailableSpaces(final String LotName) {
+    // try {
+    // ResultSet rs = statement
+    // .executeQuery("SELECT SpaceNumber From Space WHERE spaceType = 'regular' AND
+    // lotName = '" + LotName
+    // + "' AND AvailabilityStatus = 'Available';");
+    // String s = "";
+    // StringBuilder sb = new StringBuilder(s);
+
+    // while (rs.next()) {
+    // sb.append(rs.getString("SpaceNumber"));
+    // sb.append("\n");
+    // }
+    // System.out.println(sb.toString());
+    // } catch (SQLException e) {
+    // System.out.println("Error message");
+    // }
+    // }
+
     /**
-     * Gets the number of available spaces within a particular Parking Lot
-     *
-     * @param LotName the name of the lot to find the number of available spaces for
+     * Prompts the user to enter the name of a parking lot and then retrieves and
+     * displays the number of available spaces
+     * within that parking lot. The method uses a Scanner to read the parking lot
+     * name from the console and then queries
+     * the Space table in the database to find available spaces.
      */
-    public static void getAvailableSpaces(final String LotName) {
+    public static void getAvailableSpaces() {
+        Scanner scnr = new Scanner(System.in);
         try {
+            System.out.println("Enter the name of the parking lot to find available spaces:");
+            String lotName = scnr.nextLine().trim();
+
             ResultSet rs = statement
-                    .executeQuery("SELECT SpaceNumber From Space WHERE spaceType = 'regular' AND lotName = '" + LotName
+                    .executeQuery("SELECT SpaceNumber From Space WHERE spaceType = 'regular' AND lotName = '" + lotName
                             + "' AND AvailabilityStatus = 'Available';");
-            String s = "";
-            StringBuilder sb = new StringBuilder(s);
+            StringBuilder sb = new StringBuilder();
 
             while (rs.next()) {
                 sb.append(rs.getString("SpaceNumber"));
@@ -1786,7 +1923,9 @@ public class WolfParkingApplication {
             }
             System.out.println(sb.toString());
         } catch (SQLException e) {
-            System.out.println("Error message");
+            System.out.println("Error message: " + e.getMessage());
+        } finally {
+            scnr.close();
         }
     }
 
