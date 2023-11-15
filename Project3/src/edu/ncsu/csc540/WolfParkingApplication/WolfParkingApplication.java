@@ -7,11 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Scanner;
 
 public class WolfParkingApplication {
 
-    static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/oapatel2";
+    static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/stithi";
 
     private static Connection connection = null;
     private static Statement statement = null;
@@ -126,34 +129,34 @@ public class WolfParkingApplication {
                     String operation2 = scnr.next();
                     switch (operation2) {
                         case "1":
-                        	getDriverInfo();
+                        	// getDriverInfo();
                             break;
                         case "2":
-                        	enterPermitInfo();
+                        	// enterPermitInfo();
                             break;
                         case "3":
-                        	updatePermit();
+                        	// updatePermit();
                             break;
                         case "4":
-                        	deletePermit();
+                        	// deletePermit();
                             break;
                         case "5":
-                        	assignPermit();
+                        	// assignPermit();
                             break;
                         case "6":
-                        	getPermitInfo(); // don't need this right?
+                        	// getPermitInfo(); // don't need this right?
                             break;
                         case "7":
-                        	enterVehicle();
+                        	// enterVehicle();
                             break;
                         case "8":
-                        	updateVehicle();
+                        	// updateVehicle();
                             break;
                         case "9":
-                        	deleteVehicle();
+                        	// deleteVehicle();
                             break;
                         case "10":
-                        	assignVehicle(); // don't need this right?
+                        	// assignVehicle(); // don't need this right?
                             break;
                     }
                     break;
@@ -168,22 +171,22 @@ public class WolfParkingApplication {
                     String operation3 = scnr.next();
                     switch (operation3) {
                         case "1":
-                        	enterCitation();
+                        	enterCitationByInput();
                             break;
                         case "2":
-                        	updateCitation();
+                        	updateCitationByInput();
                             break;
                         case "3":
-                        	deleteCitation();
+                        	// deleteCitation();
                             break;
                         case "4":
-                        	checkParkingViolation();
+                        	// checkParkingViolation();
                             break;
                         case "5":
-                        	payCitation();
+                        	// payCitation();
                             break;
                         case "6":
-                        	requestAppeal();
+                        	// requestAppeal();
                             break;
                     }
                     break;
@@ -1610,6 +1613,36 @@ public class WolfParkingApplication {
     }
 
     // Task and operations 3: Generating and maintaining citations
+    public static void enterCitationByInput () {
+        System.out.print("Enter start date of Citation (YYYY-MM-DD), fee, lot name, category, license number, citation number (seperated by commas):");
+        Scanner scnr2 = new Scanner(System.in);
+        String line = scnr2.nextLine();
+        String[] line_parts = line.split(",");
+        String citationDate = line_parts[0].trim();
+        Double fee = Double.parseDouble(line_parts[1].trim());
+        String lotName = line_parts[2].trim();
+        String category = line_parts[3].trim();
+        String licenseNum = line_parts[4].trim();
+        String citationNumber = line_parts[5].trim();
+
+
+        // citation time
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        String time = dateFormat.format(cal.getTime());
+        String[] parts = time.split(" ");
+        String part2 = parts[1];
+        time = part2;
+
+        if (line_parts.length < 6) {
+            System.out.println(
+                    "Invalid input format. Please enter start date of Citation (YYYY-MM-DD), fee, lot name, category, license number, citation number (seperated by commas).");
+            return;
+        }
+
+        enterCitation (citationDate, fee, "unpaid", time, citationNumber, category, lotName, licenseNum);
+        scnr2.close();
+    }
     /**
      * Creates a new Citation entry with the given citation information.
      *
@@ -1644,6 +1677,29 @@ public class WolfParkingApplication {
         }
     }
 
+    public static void updateCitationByInput() {
+        Scanner scnr = new Scanner(System.in);
+  
+        System.out.println(
+                "Enter the citation number, the new category and fee separated by a comma (e.g., c1, No Permit, 45):");
+        String input = scnr.nextLine();
+        String[] parts = input.split(",");
+
+        if (parts.length < 2) {
+            System.out.println(
+                    "Invalid input format. Please enter the citation number, the new category and fee separated by a comma.");
+            return;
+        }
+
+        String citationNumber = parts[0].trim();
+        String category = parts[1].trim();
+        Double fee = Double.parseDouble(parts[2].trim());
+
+        updateCitation(citationNumber, category, fee);
+    
+        scnr.close();
+    }
+
     /**
      * Updates an existing Citation entry with the given citation category and fee
      *
@@ -1651,12 +1707,12 @@ public class WolfParkingApplication {
      * @param Category       the new category for the updated citation entry
      * @param Fee            the new fee for the updated citation entry
      */
-    public static void updateCitation(final int citationNumber, final String category, final double fee) {
+    public static void updateCitation(final String citationNumber, final String category, final double fee) {
         if (category.length() != 0 || category != null) {
             try {
                 // Updating Citation entry category
-                statement.executeUpdate("Update Citation SET Category = '" + category + "' WHERE CitationNumber = "
-                        + citationNumber + ";");
+                statement.executeUpdate("Update Citation SET Category = '" + category + "' WHERE CitationNumber = '"
+                        + citationNumber + "';");
             } catch (SQLException e) {
                 System.out.println("Error message");
             }
@@ -1666,7 +1722,7 @@ public class WolfParkingApplication {
             try {
                 // Updating Citation entry category
                 statement.executeUpdate(
-                        "Update Citation SET Fee = '" + fee + "' WHERE CitationNumber = " + citationNumber + ";");
+                        "Update Citation SET Fee = '" + fee + "' WHERE CitationNumber = '" + citationNumber + "';");
             } catch (SQLException e) {
                 System.out.println("Error message");
             }
@@ -2181,8 +2237,8 @@ public class WolfParkingApplication {
     private static void connectToDatabase() throws ClassNotFoundException, SQLException {
         Class.forName("org.mariadb.jdbc.Driver");
 
-        String user = "oapatel2";
-        String password = "200404428";
+        String user = "stithi";
+        String password = "200475434";
 
         connection = DriverManager.getConnection(jdbcURL, user, password);
         statement = connection.createStatement();
@@ -2223,7 +2279,7 @@ public class WolfParkingApplication {
         }
 
         createAllTables();
-        populateTables();
+        // populateTables();
     }
 
     private static void createAllTables() {
@@ -2297,84 +2353,87 @@ public class WolfParkingApplication {
         }
     }
 
-    private static void populateTables() {
-        enterSecurity(1);
-        enterSecurity(2);
-        enterSecurity(3);
+    // private static void populateTables() {
+    //     enterSecurity(1);
+    //     enterSecurity(2);
+    //     enterSecurity(3);
 
-        enterDriver("7729119111", "V", "Sam BankmanFried");
-        enterDriver("266399121", "E", "John Clay");
-        enterDriver("366399121", "E", "Julia Hicks");
-        enterDriver("466399121", "E", "Ivan Garcia");
-        enterDriver("122765234", "S", "Sachin Tendulkar");
-        enterDriver("9194789124", "V", "Charles Xavier");
+    //     enterDriver("7729119111", "V", "Sam BankmanFried");
+    //     enterDriver("266399121", "E", "John Clay");
+    //     enterDriver("366399121", "E", "Julia Hicks");
+    //     enterDriver("466399121", "E", "Ivan Garcia");
+    //     enterDriver("122765234", "S", "Sachin Tendulkar");
+    //     enterDriver("9194789124", "V", "Charles Xavier");
 
-        enterLot("Poulton Deck", "1021 Main Campus Dr, Raleigh, NC, 27606");
-        enterLot("Poulton Lot", "1021 Main Campus Dr, Raleigh, NC, 27606");
-        enterLot("Partners Way Deck", "851 Partners Way, Raleigh, NC, 27606");
-        enterLot("Dan Allen Parking Deck", "110 Dan Allen Dr, Raleigh, NC, 27607");
+    //     enterLot("Poulton Deck", "1021 Main Campus Dr, Raleigh, NC, 27606");
+    //     enterLot("Poulton Lot", "1021 Main Campus Dr, Raleigh, NC, 27606");
+    //     enterLot("Partners Way Deck", "851 Partners Way, Raleigh, NC, 27606");
+    //     enterLot("Dan Allen Parking Deck", "110 Dan Allen Dr, Raleigh, NC, 27607");
 
-        enterVehicle("SBF", "2024", "GT-R-Nismo", "Pearl White TriCoat", "Nissan");
-        enterVehicle("Clay1", "2023", "Model S", "Ultra Red", "Tesla");
-        enterVehicle("Hicks1", "2024", "M2 Coupe", "Zandvoort Blue", "BMW");
-        enterVehicle("Garcia1", "2024", "Continental GT Speed", "Blue Fusion", "Bentley");
-        enterVehicle("CRICKET", "2024", "Civic SI", "Sonic Gray Pearl", "Honda");
-        enterVehicle("PROFX", "2024", "Taycan Sport Turismo", "Frozenblue Metallic", "Porsche");
-        // dummy extra data
-        enterVehicle("VAN-9910", null, "Macan GTS", "Papaya Metallic", null);
+    //     enterVehicle("SBF", "2024", "GT-R-Nismo", "Pearl White TriCoat", "Nissan");
+    //     enterVehicle("Clay1", "2023", "Model S", "Ultra Red", "Tesla");
+    //     enterVehicle("Hicks1", "2024", "M2 Coupe", "Zandvoort Blue", "BMW");
+    //     enterVehicle("Garcia1", "2024", "Continental GT Speed", "Blue Fusion", "Bentley");
+    //     enterVehicle("CRICKET", "2024", "Civic SI", "Sonic Gray Pearl", "Honda");
+    //     enterVehicle("PROFX", "2024", "Taycan Sport Turismo", "Frozenblue Metallic", "Porsche");
+    //     // dummy extra data
+    //     enterVehicle("VAN-9910", null, "Macan GTS", "Papaya Metallic", null);
 
-        // zones
-        enterZone("V", "Poulton Deck");
-        enterZone("A", "Partners Way Deck");
-        enterZone("AS", "Dan Allen Parking Deck");
+    //     // zones
+    //     enterZone("V", "Poulton Deck");
+    //     enterZone("A", "Partners Way Deck");
+    //     enterZone("AS", "Dan Allen Parking Deck");
 
-        // spaces
-        enterSpace(1, "Poulton Deck", "regular", "available");
-        enterSpace(2, "Partners Way Deck", "compact car", "not available");
-        enterSpace(3, "Dan Allen Parking Deck", "electric", "available");
+    //     // spaces
+    //     enterSpace(1, "Poulton Deck", "regular", "available");
+    //     enterSpace(2, "Partners Way Deck", "compact car", "not available");
+    //     enterSpace(3, "Dan Allen Parking Deck", "electric", "available");
 
-        // LOT NAME MIGHT NEED TO GO IN HERE
-        // enterPermitInfo( "VSBF1C", "Commuter", "V", "Poulton Deck",
-        // "7729119111", "SBF", "Regular", "2023-01-01",
-        // "2024-01-01", "06:00:00" );
-        // enterPermitInfo( "EJC1R", "Residential", "A", "Partners Way Deck",
-        // "266399121", "Clay1", "Electric",
-        // "2010-01-01", "2030-01-01", "06:00:00" );
-        // enterPermitInfo( "EJH2C", "Commuter", "A", "Partners Way Deck",
-        // "366399121", "Hicks1", "Regular", "2023-01-01",
-        // "2024-01-01", "06:00:00" );
-        // enterPermitInfo( "EIG3C", "Commuter", "A", "Partners Way Deck",
-        // "466399121", "Garcia1", "Regular", "2023-01-01",
-        // "2024-01-01", "06:00:00" );
-        // enterPermitInfo( "SST1R", "Residential", "AS", "Dan Allen Parking
-        // Deck", "122765234", "CRICKET", "Compact Car",
-        // "2022-01-01", "2023-09-30", "06:00:00" );
-        // enterPermitInfo( "VCX1SE", "Special event", "V", "Poulton Deck",
-        // "9194789124", "PROFX", "Handicap",
-        // "2023-01-01", "2023-11-15", "06:00:00" );
+    //     // LOT NAME MIGHT NEED TO GO IN HERE
+    //     // enterPermitInfo( "VSBF1C", "Commuter", "V", "Poulton Deck",
+    //     // "7729119111", "SBF", "Regular", "2023-01-01",
+    //     // "2024-01-01", "06:00:00" );
+    //     // enterPermitInfo( "EJC1R", "Residential", "A", "Partners Way Deck",
+    //     // "266399121", "Clay1", "Electric",
+    //     // "2010-01-01", "2030-01-01", "06:00:00" );
+    //     // enterPermitInfo( "EJH2C", "Commuter", "A", "Partners Way Deck",
+    //     // "366399121", "Hicks1", "Regular", "2023-01-01",
+    //     // "2024-01-01", "06:00:00" );
+    //     // enterPermitInfo( "EIG3C", "Commuter", "A", "Partners Way Deck",
+    //     // "466399121", "Garcia1", "Regular", "2023-01-01",
+    //     // "2024-01-01", "06:00:00" );
+    //     // enterPermitInfo( "SST1R", "Residential", "AS", "Dan Allen Parking
+    //     // Deck", "122765234", "CRICKET", "Compact Car",
+    //     // "2022-01-01", "2023-09-30", "06:00:00" );
+    //     // enterPermitInfo( "VCX1SE", "Special event", "V", "Poulton Deck",
+    //     // "9194789124", "PROFX", "Handicap",
+    //     // "2023-01-01", "2023-11-15", "06:00:00" );
 
-        // CHANGE LATER
-        enterPermitInfo("VSBF1C", "Commuter", "V", null, "7729119111", "SBF", "Regular", "2023-01-01", "2024-01-01",
-                "06:00:00");
-        enterPermitInfo("EJC1R", "Residential", "A", null, "266399121", "Clay1", "Electric", "2010-01-01", "2030-01-01",
-                "06:00:00");
-        enterPermitInfo("EJH2C", "Commuter", "A", null, "366399121", "Hicks1", "Regular", "2023-01-01", "2024-01-01",
-                "06:00:00");
-        enterPermitInfo("EIG3C", "Commuter", "A", null, "466399121", "Garcia1", "Regular", "2023-01-01", "2024-01-01",
-                "06:00:00");
-        enterPermitInfo("SST1R", "Residential", "AS", null, "122765234", "CRICKET", "Compact Car", "2022-01-01",
-                "2023-09-30", "06:00:00");
-        enterPermitInfo("VCX1SE", "Special event", "V", null, "9194789124", "PROFX", "Handicap", "2023-01-01",
-                "2023-11-15", "06:00:00");
+    //     // CHANGE LATER
+    //     enterPermitInfo("VSBF1C", "Commuter", "V", null, "7729119111", "SBF", "Regular", "2023-01-01", "2024-01-01",
+    //             "06:00:00");
+    //     enterPermitInfo("EJC1R", "Residential", "A", null, "266399121", "Clay1", "Electric", "2010-01-01", "2030-01-01",
+    //             "06:00:00");
+    //     enterPermitInfo("EJH2C", "Commuter", "A", null, "366399121", "Hicks1", "Regular", "2023-01-01", "2024-01-01",
+    //             "06:00:00");
+    //     enterPermitInfo("EIG3C", "Commuter", "A", null, "466399121", "Garcia1", "Regular", "2023-01-01", "2024-01-01",
+    //             "06:00:00");
+    //     enterPermitInfo("SST1R", "Residential", "AS", null, "122765234", "CRICKET", "Compact Car", "2022-01-01",
+    //             "2023-09-30", "06:00:00");
+    //     enterPermitInfo("VCX1SE", "Special event", "V", null, "9194789124", "PROFX", "Handicap", "2023-01-01",
+    //             "2023-11-15", "06:00:00");
 
-        // CITATION
-        enterCitation("2024-01-01", 40, "PAID", "08:00:00", "NP1", "No Permit", "Dan Allen Parking Deck", "VAN-9910");
-        enterCitation("2023-10-01", 30, "DUE", "08:00:00", "EP1", "Expired Permit", "Poulton Lot", "CRICKET"); // "Poulton
-                                                                                                               // Lot"
-                                                                                                               // or
-                                                                                                               // "Poulton
-                                                                                                               // Deck"
+    //     // CITATION
+    //     enterCitation("2024-01-01", 40, "PAID", "08:00:00", "NP1", "No Permit", "Dan Allen Parking Deck", "VAN-9910");
+    //     enterCitation("2023-10-01", 30, "DUE", "08:00:00", "EP1", "Expired Permit", "Poulton Lot", "CRICKET"); // "Poulton
+    //                                                                                                            // Lot"
+    //                                                                                                            // or
+    //                                                                                                            // "Poulton
+    //                                                                                                            // Deck"
 
-    }
+    // }
 
 }
+
+
+// 2023-01-01,35,Dan Allen Parking Deck,No Permit,CRICKET,NP7
