@@ -246,7 +246,7 @@ public class WolfParkingApplication {
                     + name + "','" + status + "');" );
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error when entering driver" );
         }
     }
 
@@ -287,7 +287,20 @@ public class WolfParkingApplication {
      * @param name
      *            the updated name of the driver entry to be updated
      */
-    public static void updateDriverInformation ( final String driverID, final String status, final String name ) {
+    public static void updateDriverInformation ( final String driverID, final String newDriverID, final String status,
+            final String name ) {
+
+        if ( newDriverID.length() != 0 || newDriverID != null ) {
+            try {
+                // Update driver ID with the matching driverID
+                statement.executeUpdate(
+                        "UPDATE Driver SET DriverID='" + newDriverID + "' " + "WHERE DriverID='" + driverID + "';" );
+            }
+            catch ( SQLException e ) {
+                System.out.println( "Error message when updating driver ID" );
+            }
+        }
+
         if ( status.length() != 0 || status != null ) {
             try {
                 // Update driver status with the matching driverID
@@ -295,7 +308,7 @@ public class WolfParkingApplication {
                         "UPDATE Driver SET Status='" + status + "' " + "WHERE DriverID='" + driverID + "';" );
             }
             catch ( SQLException e ) {
-                System.out.println( "Error message" );
+                System.out.println( "Error message when updating driver status" );
             }
         }
 
@@ -306,7 +319,7 @@ public class WolfParkingApplication {
                         "UPDATE Driver SET Name='" + name + "' " + "WHERE DriverID='" + driverID + "';" );
             }
             catch ( SQLException e ) {
-                System.out.println( "Error message" );
+                System.out.println( "Error message when updating driver name" );
             }
         }
 
@@ -321,21 +334,22 @@ public class WolfParkingApplication {
     public static void updateDriverInformationByInput ( final Scanner scnr ) {
 
         System.out.println(
-                "Enter the driver ID, new status, and new name separated by commas (e.g., 'oapatel2', 'S', 'Om Patel') (leave status or name blank if no change):" );
+                "Enter the driver ID, new driver ID, new status, and new name separated by commas (e.g., 'tatran5', 'oapatel2', 'S', 'Om Patel') (leave status or name blank if no change):" );
         String input = scnr.nextLine();
         String[] parts = input.split( "," );
 
-        if ( parts.length < 3 ) {
+        if ( parts.length < 4 ) {
             System.out.println(
                     "Invalid input format. Please enter the driver ID, status, and name separated by commas." );
             return;
         }
 
         String driverID = parts[0].trim();
-        String status = parts[1].trim();
-        String name = parts[2].trim();
+        String newDriverID = parts[1].trim();
+        String status = parts[2].trim();
+        String name = parts[3].trim();
 
-        updateDriverInformation( driverID, status, name );
+        updateDriverInformation( driverID, newDriverID, status, name );
     }
 
     /**
@@ -350,7 +364,7 @@ public class WolfParkingApplication {
             statement.executeUpdate( "DELETE FROM Driver WHERE DriverID='" + driverID + "';" );
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when deleting driver" );
         }
     }
 
@@ -382,7 +396,7 @@ public class WolfParkingApplication {
                     "INSERT INTO ParkingLot (LotName, Address) VALUES ('" + lotName + "','" + address + "');" );
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when inserting lot" );
         }
 
         // Enters regular spaces to this lot
@@ -441,14 +455,23 @@ public class WolfParkingApplication {
      * @param address
      *            the new address of the parking lot
      */
-    public static void updateLotInformation ( final String lotName, final String address ) {
+    public static void updateLotInformation ( final String oldLotName, final String newLotName, final String address ) {
         try {
-            // Updating ParkingLot entry with the matching lot name.
+            // Updating ParkingLot entry name with the matching lot name.
             statement.executeUpdate(
-                    "UPDATE ParkingLot SET Address='" + address + "' WHERE LotName = '" + lotName + "';" );
+                    "UPDATE ParkingLot SET LotName='" + newLotName + "' WHERE LotName = '" + oldLotName + "';" );
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when updating lot name" );
+        }
+
+        try {
+            // Updating ParkingLot entry address with the matching lot name.
+            statement.executeUpdate(
+                    "UPDATE ParkingLot SET Address='" + address + "' WHERE LotName = '" + oldLotName + "';" );
+        }
+        catch ( SQLException e ) {
+            System.out.println( "Error message when updating lot address" );
         }
     }
 
@@ -462,21 +485,23 @@ public class WolfParkingApplication {
     public static void updateLotInformationByInput ( final Scanner scnr ) {
 
         System.out.println(
-                "Enter the name of the parking lot and the new address separated by a comma (e.g., 'MainLot', '123 Wolf Drive'):" );
+                "Enter the name of the parking lot and the new address separated by a comma (e.g., 'OldLot', 'NewLot', '123 Wolf Drive'):" );
         String input = scnr.nextLine();
         String[] parts = input.split( "," );
 
-        if ( parts.length < 2 ) {
+        if ( parts.length < 3 ) {
             System.out
                     .println( "Invalid input format. Please enter the lot name and new address separated by a comma." );
             return;
         }
 
-        String lotName = parts[0].trim();
+        String oldLotName = parts[0].trim();
+        String newLotName = parts[0].trim();
+
         String address = parts[1].trim();
 
         // Updating ParkingLot entry with the matching lot name.
-        updateLotInformation( lotName, address );
+        updateLotInformation( oldLotName, newLotName, address );
 
     }
 
@@ -492,7 +517,7 @@ public class WolfParkingApplication {
             statement.executeUpdate( "DELETE FROM ParkingLot WHERE LotName= '" + lotName + "';" );
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when deleting lot" );
         }
 
     }
@@ -527,7 +552,7 @@ public class WolfParkingApplication {
             statement.executeUpdate( "INSERT INTO Zone(ZoneID, LotName) VALUES ('" + zoneID + "','" + lotName + "');" );
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when entering zone" );
         }
 
     }
@@ -569,14 +594,25 @@ public class WolfParkingApplication {
      * @param oldLotName
      *            the old parking lot where the existing zone exists in
      */
-    public static void updateZone ( final String zoneID, final String newLotName, final String oldLotName ) {
+    public static void updateZone ( final String zoneID, final String newZoneID, final String newLotName,
+            final String oldLotName ) {
+
+        try {
+            // Updating Zone entry with existing ID
+            statement.executeUpdate( "UPDATE Zone SET ZoneID='" + newZoneID + "' WHERE ZoneID = '" + zoneID
+                    + "' AND LotName ='" + oldLotName + "';" );
+        }
+        catch ( SQLException e ) {
+            System.out.println( "Error message when updating zoneID" );
+        }
+
         try {
             // Updating Zone entry with existing ID
             statement.executeUpdate( "UPDATE Zone SET LotName='" + newLotName + "' WHERE ZoneID = '" + zoneID
                     + "' AND LotName ='" + oldLotName + "';" );
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when updating zone lot name" );
         }
 
     }
@@ -591,22 +627,23 @@ public class WolfParkingApplication {
     public static void updateZoneByInput ( final Scanner scnr ) {
 
         System.out.println(
-                "Enter the zone ID, new parking lot name, and old parking lot name separated by commas (e.g., 'A', 'MainLot', 'Centennial'):" );
+                "Enter the zone ID, new zone ID, new parking lot name, and old parking lot name separated by commas (e.g., 'B', 'A', 'MainLot', 'Centennial'):" );
         String input = scnr.nextLine();
         String[] parts = input.split( "," );
 
-        if ( parts.length < 3 ) {
+        if ( parts.length < 4 ) {
             System.out.println(
                     "Invalid input format. Please enter the zone ID, new lot name, and old lot name separated by commas." );
             return;
         }
 
-        String zoneID = parts[0].trim();
+        String oldZoneID = parts[0].trim();
+        String newZoneID = parts[0].trim();
         String newLotName = parts[1].trim();
         String oldLotName = parts[2].trim();
 
         // Updating Zone entry with existing ID
-        updateZone( zoneID, newLotName, oldLotName );
+        updateZone( oldZoneID, newZoneID, newLotName, oldLotName );
 
     }
 
@@ -624,7 +661,7 @@ public class WolfParkingApplication {
             statement.executeUpdate( "DELETE FROM Zone WHERE ZoneID='" + zoneID + "' AND LotName ='" + lotName + "';" );
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when deleting zone" );
         }
 
     }
@@ -676,7 +713,7 @@ public class WolfParkingApplication {
 
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when entering space" );
         }
     }
 
@@ -723,18 +760,51 @@ public class WolfParkingApplication {
      * @param availabilityStatus
      *            the availability of the Space to be updated
      */
-    public static void updateSpace ( final int spaceNumber, final String lotName, final String spaceType,
-            final String availabilityStatus ) {
+    public static void updateSpace ( final int spaceNumber, final int newSpaceNumber, final String lotName,
+            final String newLotName, final String spaceType, final String availabilityStatus ) {
+        if ( newSpaceNumber > 0 ) {
+            try {
+                // Updates spaceType with matching spaceNumber and lotName
+                statement.executeUpdate( "UPDATE Space SET SpaceNumber='" + newSpaceNumber + "' "
+                        + "WHERE SpaceNumber='" + spaceNumber + "' AND LotName='" + lotName + "';" );
+
+            }
+            catch ( SQLException e ) {
+                System.out.println( "Error message when updating space number" );
+            }
+        }
+        if ( newLotName.length() != 0 || newLotName != null ) {
+            try {
+                // Updates spaceType with matching spaceNumber and lotName
+                statement.executeUpdate( "UPDATE Space SET LotName='" + newLotName + "' " + "WHERE SpaceNumber='"
+                        + spaceNumber + "' AND LotName='" + lotName + "';" );
+
+            }
+            catch ( SQLException e ) {
+                System.out.println( "Error message when updating space lotname" );
+            }
+        }
+        if ( spaceType.length() != 0 || spaceType != null ) {
+            try {
+                // Updates spaceType with matching spaceNumber and lotName
+                statement.executeUpdate( "UPDATE Space SET SpaceType='" + spaceType + "' " + "WHERE SpaceNumber='"
+                        + spaceNumber + "' AND LotName='" + lotName + "';" );
+
+            }
+            catch ( SQLException e ) {
+                System.out.println( "Error message when updating spacetype" );
+            }
+        }
 
         if ( spaceType.length() != 0 || spaceType != null ) {
             try {
                 // Updates spaceType with matching spaceNumber and lotName
                 statement.executeUpdate( "UPDATE Space SET SpaceType='" + spaceType + "' " + "WHERE SpaceNumber='"
-                        + spaceNumber + "' AND WHERE LotName='" + lotName + "';" );
+                        + spaceNumber + "' AND LotName='" + lotName + "';" );
 
             }
             catch ( SQLException e ) {
-                System.out.println( "Error message" );
+                System.out.println( "Error message when updating spacetype" );
             }
         }
 
@@ -743,11 +813,11 @@ public class WolfParkingApplication {
                 // Updates availabilityStatus with matching spaceNumber and
                 // lotName
                 statement.executeUpdate( "UPDATE Space SET AvailabilityStatus='" + availabilityStatus + "' "
-                        + "WHERE SpaceNumber='" + spaceNumber + "' AND WHERE LotName='" + lotName + "';" );
+                        + "WHERE SpaceNumber='" + spaceNumber + "' AND LotName='" + lotName + "';" );
 
             }
             catch ( SQLException e ) {
-                System.out.println( "Error message" );
+                System.out.println( "Error message when updating space availability" );
             }
         }
 
@@ -763,22 +833,24 @@ public class WolfParkingApplication {
     public static void updateSpaceByInput ( final Scanner scnr ) {
         try {
             System.out.println(
-                    "Enter the space number, lot name, new space type, and new availability status separated by commas (e.g., '101, MainLot, Compact, Occupied'):" );
+                    "Enter the space number, new space number, lot name, new lot name, new space type, and new availability status separated by commas (e.g., 101, 102, 'OldLot', 'NewLot', Compact, Occupied'):" );
             String input = scnr.nextLine();
             String[] parts = input.split( "," );
 
-            if ( parts.length < 4 ) {
+            if ( parts.length < 6 ) {
                 System.out.println(
                         "Invalid input format. Please enter the space number, lot name, space type, and availability status separated by commas." );
                 return;
             }
 
             int spaceNumber = Integer.parseInt( parts[0].trim() );
-            String lotName = parts[1].trim();
-            String spaceType = parts[2].trim();
-            String availabilityStatus = parts[3].trim();
+            int newSpaceNumber = Integer.parseInt( parts[1].trim() );
+            String lotName = parts[2].trim();
+            String newLotName = parts[3].trim();
+            String spaceType = parts[4].trim();
+            String availabilityStatus = parts[5].trim();
 
-            updateSpace( spaceNumber, lotName, spaceType, availabilityStatus );
+            updateSpace( spaceNumber, newSpaceNumber, lotName, newLotName, spaceType, availabilityStatus );
 
         }
         catch ( NumberFormatException e ) {
@@ -801,7 +873,7 @@ public class WolfParkingApplication {
 
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when deleting space" );
         }
     }
 
@@ -841,7 +913,7 @@ public class WolfParkingApplication {
                     + "' AND ZoneID ='" + ZoneID + "';" );
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when assigning zone to Lot" );
         }
     }
 
@@ -891,7 +963,7 @@ public class WolfParkingApplication {
                     + "' AND SpaceNumber =" + spaceNumber + ";" );
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when assigning space to Lot" );
         }
     }
 
@@ -944,7 +1016,7 @@ public class WolfParkingApplication {
                     + "' AND SpaceNumber =" + spaceNumber + ";" );
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when assigning type to space" );
         }
     }
 
@@ -997,7 +1069,7 @@ public class WolfParkingApplication {
                     + citationNumber + "';" );
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when updating payment status" );
         }
     }
 
@@ -1053,7 +1125,7 @@ public class WolfParkingApplication {
 
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when getting driver info" );
         }
     }
 
@@ -1133,8 +1205,6 @@ public class WolfParkingApplication {
             System.out.println( "Error getting status from driver" );
         }
 
-        System.out.println( currStatus );
-
         ResultSet rs2;
         int permitCount = 0;
         try {
@@ -1149,16 +1219,16 @@ public class WolfParkingApplication {
             System.out.print( "Error getting permit count from driver" );
         }
 
-        System.out.println( "Status of driver: " + currStatus );
-        System.out.println( "Permit count of driver: " + permitCount );
+        // System.out.println( "Status of driver: " + currStatus );
+        // System.out.println( "Permit count of driver: " + permitCount );
         boolean canExecute = true;
 
         if ( currStatus.equals( "V" ) ) {
 
-            // if ( !permitType.equals( "V" ) ) {
-            // canExecute = false;
-            // System.out.println( "Visitor can only park in zone V" );
-            // }
+            if ( !zoneID.equals( "V" ) ) {
+                canExecute = false;
+                System.out.println( "Visitor can only park in zone V" );
+            }
 
             if ( permitCount >= 1 ) {
                 canExecute = false;
@@ -1169,14 +1239,11 @@ public class WolfParkingApplication {
         else if ( currStatus.equals( "S" ) )
 
         {
-            // if ( ! ( spaceType.equals( "AS" ) || spaceType.equals( "BS" ) ||
-            // spaceType.equals( "CS" )
-            // || spaceType.equals( "DS" ) ) ) {
-            // canExecute = false;
-            // System.out.println( "Student can only park in zones AS, BS, CS,
-            // DS."
-            // );
-            // }
+            if ( ! ( zoneID.equals( "AS" ) || zoneID.equals( "BS" ) || zoneID.equals( "CS" )
+                    || zoneID.equals( "DS" ) ) ) {
+                canExecute = false;
+                System.out.println( "Student can only park in zones AS, BS, CS, DS." );
+            }
 
             if ( permitCount >= 2 ) {
                 canExecute = false;
@@ -1219,13 +1286,10 @@ public class WolfParkingApplication {
         }
         else if ( currStatus.equals( "E" ) ) {
 
-            // if ( ! ( spaceType.equals( "A" ) || spaceType.equals( "B" ) ||
-            // spaceType.equals( "C" )
-            // || spaceType.equals( "D" ) ) ) {
-            // canExecute = false;
-            // System.out.println( "Employee can only park in zones A, B, C, D."
-            // );
-            // }
+            if ( ! ( zoneID.equals( "A" ) || zoneID.equals( "B" ) || zoneID.equals( "C" ) || zoneID.equals( "D" ) ) ) {
+                canExecute = false;
+                System.out.println( "Employee can only park in zones A, B, C, D." );
+            }
             if ( permitCount >= 3 ) {
                 canExecute = false;
                 System.out.println( "Employee already has three permits" );
@@ -1418,7 +1482,7 @@ public class WolfParkingApplication {
                                 + lotName + "');" );
 
                 // Update space to occupied
-                updateSpace( spaceNumber, lotName, spaceType, "occupied" );
+                updateSpace( spaceNumber, -1, lotName, null, spaceType, "occupied" );
 
                 // Commit the transaction
                 connection.commit();
@@ -1518,9 +1582,9 @@ public class WolfParkingApplication {
      * @param lotName
      *            lot name of the permit
      */
-    public static void updatePermit ( final String permitID, final String spaceType, final String startDate,
-            final String expDate, final String driverID, final String permitType, final String expTime,
-            final String licenseNum, final String zoneID, final String lotName ) {
+    public static void updatePermit ( final String permitID, final String newPermitID, final String spaceType,
+            final String startDate, final String expDate, final String driverID, final String permitType,
+            final String expTime, final String licenseNum, final String zoneID, final String lotName ) {
 
         // call the check valid permit and use the old values for permit
         // wherever a
@@ -1559,6 +1623,7 @@ public class WolfParkingApplication {
         }
 
         // Use old values if new ones are null
+        String tempPermitID = newPermitID != null ? newPermitID : permitID;
         String newSpaceType = spaceType != null ? spaceType : tempSpaceType;
         String newStartDate = startDate != null ? startDate : tempStartDate;
         String newExpDate = expDate != null ? expDate : tempExpDate;
@@ -1569,7 +1634,7 @@ public class WolfParkingApplication {
         String newZoneID = zoneID != null ? zoneID : tempZoneID;
         String newLotName = lotName != null ? lotName : tempLotName;
 
-        boolean validPermit = checkValidPermit( permitID, newPermitType, newZoneID, newLotName, newDriverID,
+        boolean validPermit = checkValidPermit( tempPermitID, newPermitType, newZoneID, newLotName, newDriverID,
                 newLicenseNum, newSpaceType, newStartDate, newExpDate, newExpTime );
         int spaceNumber = returnAvailableSpaceNumber( spaceType, newLotName );
         if ( spaceNumber != -1 && validPermit ) {
@@ -1578,10 +1643,22 @@ public class WolfParkingApplication {
 
                 try {
                     statement.executeUpdate(
+                            "UPDATE Permit SET PermitID='" + tempPermitID + "'WHERE PermitID='" + permitID + "';" );
+                }
+                catch ( SQLException e ) {
+                    System.out.println( "Error message when updating permit ID" );
+                }
+
+            }
+
+            if ( spaceType.length() != 0 || spaceType != null ) {
+
+                try {
+                    statement.executeUpdate(
                             "UPDATE Permit SET SpaceType='" + spaceType + "'WHERE PermitID='" + permitID + "';" );
                 }
                 catch ( SQLException e ) {
-                    System.out.println( "Error message" );
+                    System.out.println( "Error message when updating permit spacetype" );
                 }
 
             }
@@ -1592,7 +1669,7 @@ public class WolfParkingApplication {
                             "UPDATE Permit SET StartDate='" + startDate + "'WHERE PermitID='" + permitID + "';" );
                 }
                 catch ( SQLException e ) {
-                    System.out.println( "Error message" );
+                    System.out.println( "Error message when updating permit start date" );
                 }
 
             }
@@ -1604,7 +1681,7 @@ public class WolfParkingApplication {
                             "UPDATE Permit SET ExpDate='" + expDate + "'WHERE PermitID='" + permitID + "';" );
                 }
                 catch ( SQLException e ) {
-                    System.out.println( "Error message" );
+                    System.out.println( "Error message when updating permit exp date" );
                 }
 
             }
@@ -1616,7 +1693,7 @@ public class WolfParkingApplication {
                             "UPDATE Permit SET DriverID='" + driverID + "'WHERE PermitID=" + permitID + "';" );
                 }
                 catch ( SQLException e ) {
-                    System.out.println( "Error message" );
+                    System.out.println( "Error message when updating permit driver id" );
                 }
 
             }
@@ -1628,7 +1705,7 @@ public class WolfParkingApplication {
                             "UPDATE Permit SET PermitType='" + permitType + "'WHERE PermitID='" + permitID + "';" );
                 }
                 catch ( SQLException e ) {
-                    System.out.println( "Error message" );
+                    System.out.println( "Error message when updating permittype" );
                 }
 
             }
@@ -1640,7 +1717,7 @@ public class WolfParkingApplication {
                             "UPDATE Permit SET ExpTime='" + expTime + "'WHERE PermitID='" + permitID + "';" );
                 }
                 catch ( SQLException e ) {
-                    System.out.println( "Error message" );
+                    System.out.println( "Error message when updating permit expTime" );
                 }
 
             }
@@ -1652,7 +1729,7 @@ public class WolfParkingApplication {
                             "UPDATE Permit SET LicenseNum='" + licenseNum + "'WHERE PermitID='" + permitID + "';" );
                 }
                 catch ( SQLException e ) {
-                    System.out.println( "Error message" );
+                    System.out.println( "Error message when updating permit licenseNum" );
                 }
 
             }
@@ -1664,7 +1741,7 @@ public class WolfParkingApplication {
                             "UPDATE Permit SET ZoneID='" + zoneID + "'WHERE PermitID='" + permitID + "';" );
                 }
                 catch ( SQLException e ) {
-                    System.out.println( "Error message" );
+                    System.out.println( "Error message when updating permit zoneID" );
                 }
 
             }
@@ -1676,34 +1753,35 @@ public class WolfParkingApplication {
                             "UPDATE Permit SET LotName='" + lotName + "'WHERE PermitID='" + permitID + "';" );
                 }
                 catch ( SQLException e ) {
-                    System.out.println( "Error message" );
+                    System.out.println( "Error message when updating permit lotName" );
                 }
 
             }
         }
         else {
-            System.out.println( "Error message" );
+            System.out.println( "No avaiable space or invalid permit " );
         }
 
     }
 
     public static void updatePermitByInfo ( final Scanner scnr ) {
         System.out.println(
-                "Enter the permitID, permit type, zone ID, lot name, driver id (e.g., 1, 'commuter', 'AS', 'Centennial', 'albhadri'): " );
+                "Enter the permitID, newPermitID, permit type, zone ID, lot name, driver id (e.g., 1, 2, 'commuter', 'AS', 'Centennial', 'albhadri'): " );
         String input = scnr.next();
 
         String[] parts = input.split( "," );
 
-        if ( parts.length < 5 ) {
+        if ( parts.length < 6 ) {
             System.out.println( "Invalid input format. Please enter the information in order seperated by a comma." );
             return;
         }
 
         String permitID = parts[0];
-        String permitType = parts[1];
-        String zoneID = parts[2];
-        String lotName = parts[3];
-        String driverID = parts[4];
+        String newPermitID = parts[1];
+        String permitType = parts[2];
+        String zoneID = parts[3];
+        String lotName = parts[4];
+        String driverID = parts[5];
 
         System.out.println(
                 "Enter the license number, space type, start date, expiration date, expiration time (e.g., 'XYZ334', 'handicap', 'AS', '2023-10-21', '2023-10-31'): " );
@@ -1722,8 +1800,8 @@ public class WolfParkingApplication {
         String expDate = parts[3];
         String expTime = parts[4];
 
-        enterPermitInfo( permitID, permitType, zoneID, lotName, driverID, licenseNum, spaceType, startDate, expDate,
-                expTime );
+        updatePermit( permitID, newPermitID, spaceType, startDate, expDate, driverID, permitType, expTime, licenseNum,
+                zoneID, lotName );
 
     }
 
@@ -1753,7 +1831,7 @@ public class WolfParkingApplication {
         }
 
         int spaceNumber = returnOccupiedSpaceNumber( tempSpaceType, tempLotName );
-        updateSpace( spaceNumber, tempLotName, tempSpaceType, "available" );
+        updateSpace( spaceNumber, -1, tempLotName, null, tempSpaceType, "available" );
 
         try {
 
@@ -1761,7 +1839,7 @@ public class WolfParkingApplication {
             statement.executeUpdate( "DELETE FROM Permit WHERE PermitId ='" + permitID + "';" );
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when deleting permit" );
         }
     }
 
@@ -1826,7 +1904,7 @@ public class WolfParkingApplication {
 
             }
             catch ( SQLException e ) {
-                System.out.println( "Error message" );
+                System.out.println( "Error message when assigning permit" );
             }
         }
         else {
@@ -1874,7 +1952,7 @@ public class WolfParkingApplication {
                     + "', '" + year + "', '" + model + "', '" + color + "', '" + manf + "');" );
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when entering vehicle" );
         }
     }
 
@@ -1901,8 +1979,20 @@ public class WolfParkingApplication {
 
     }
 
-    public static void updateVehicle ( final String licenseNum, final String year, final String model,
-            final String color, final String manf ) {
+    public static void updateVehicle ( final String licenseNum, final String newLicenseNum, final String year,
+            final String model, final String color, final String manf ) {
+
+        if ( newLicenseNum.length() != 0 || newLicenseNum != null ) {
+
+            try {
+
+                statement.executeUpdate( "UPDATE Vehicle SET LicenseNum='" + newLicenseNum + "' WHERE LicenseNum='"
+                        + licenseNum + "';" );
+            }
+            catch ( SQLException e ) {
+                System.out.println( "Error message when updating vehicle license num" );
+            }
+        }
 
         if ( year.length() != 0 || year != null ) {
 
@@ -1912,7 +2002,7 @@ public class WolfParkingApplication {
                         "UPDATE Vehicle SET Year='" + year + "' WHERE LicenseNum='" + licenseNum + "';" );
             }
             catch ( SQLException e ) {
-                System.out.println( "Error message" );
+                System.out.println( "Error message when updating vehicle year" );
             }
         }
 
@@ -1924,7 +2014,7 @@ public class WolfParkingApplication {
                         "UPDATE Vehicle SET Model='" + model + "' WHERE LicenseNum='" + licenseNum + "';" );
             }
             catch ( SQLException e ) {
-                System.out.println( "Error message" );
+                System.out.println( "Error message when updating vehicle model" );
             }
         }
 
@@ -1936,7 +2026,7 @@ public class WolfParkingApplication {
                         "UPDATE Vehicle SET Color='" + color + "' WHERE LicenseNum='" + licenseNum + "';" );
             }
             catch ( SQLException e ) {
-                System.out.println( "Error message" );
+                System.out.println( "Error message when updating vehicle color" );
             }
         }
 
@@ -1948,7 +2038,7 @@ public class WolfParkingApplication {
                         "UPDATE Vehicle SET Manf='" + manf + "' WHERE LicenseNum='" + licenseNum + "';" );
             }
             catch ( SQLException e ) {
-                System.out.println( "Error message" );
+                System.out.println( "Error message when updating vehicle manf" );
             }
         }
 
@@ -1957,23 +2047,24 @@ public class WolfParkingApplication {
     public static void updateVehicleByInfo ( final Scanner scnr ) {
 
         System.out.println(
-                "Enter the license number, year, model, color, and manufacturer (e.g., 'XYNCL', '2010', 'Civic', 'Blue', 'Honda'): " );
+                "Enter the license number, new license number, year, model, color, and manufacturer (e.g., 'XYNCL', 'XYNCZ', '2010', 'Civic', 'Blue', 'Honda'): " );
         String input = scnr.next();
 
         String[] parts = input.split( "," );
 
-        if ( parts.length < 5 ) {
+        if ( parts.length < 6 ) {
             System.out.println( "Invalid input format. Please enter the information in order seperated by a comma." );
             return;
         }
 
         String licenseNum = parts[0];
-        String year = parts[1];
-        String model = parts[2];
-        String color = parts[3];
-        String manf = parts[4];
+        String newLicenseNum = parts[1];
+        String year = parts[2];
+        String model = parts[3];
+        String color = parts[4];
+        String manf = parts[5];
 
-        updateVehicle( licenseNum, year, model, color, manf );
+        updateVehicle( licenseNum, newLicenseNum, year, model, color, manf );
 
     }
 
@@ -1991,7 +2082,7 @@ public class WolfParkingApplication {
 
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when deleting vehicle" );
         }
     }
 
@@ -2018,7 +2109,7 @@ public class WolfParkingApplication {
                     "UPDATE PERMIT SET PermitID = '" + permitID + "'WHERE LicenseNum = '" + licenseNum + "';" );
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when assigning vehicle" );
         }
     }
 
@@ -2048,9 +2139,10 @@ public class WolfParkingApplication {
         String[] line_parts = line.split( "," );
         String citationDate = line_parts[0].trim();
         String lotName = line_parts[1].trim();
-        String category = line_parts[2].trim();
-        String licenseNum = line_parts[3].trim();
-        String citationNumber = line_parts[4].trim();
+        String zoneID = line_parts[2].trim();
+        String category = line_parts[3].trim();
+        String licenseNum = line_parts[4].trim();
+        String citationNumber = line_parts[5].trim();
 
         // citation time
         DateFormat dateFormat = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss" );
@@ -2060,13 +2152,13 @@ public class WolfParkingApplication {
         String part2 = parts[1];
         time = part2;
 
-        if ( line_parts.length < 5 ) {
+        if ( line_parts.length < 6 ) {
             System.out.println(
                     "Invalid input format. Please enter start date of Citation (YYYY-MM-DD), fee, lot name, category, license number, citation number (seperated by commas)." );
             return;
         }
 
-        enterCitation( citationDate, "unpaid", time, citationNumber, category, lotName, licenseNum );
+        enterCitation( citationDate, "unpaid", time, citationNumber, category, lotName, zoneID, licenseNum );
     }
 
     public static double feeCalculation ( final String category, final String licenseNum ) {
@@ -2077,7 +2169,7 @@ public class WolfParkingApplication {
         try {
             // Find all permits with the same license number
             ResultSet rs = statement
-                    .executeQuery( "SELECT SpaceType FROM Permit WHERE LicenseNum ='" + licenseNum + "';" );
+                    .executeQuery( "SELECT PermitType FROM Permit WHERE LicenseNum ='" + licenseNum + "';" );
 
             int rowCount = 0;
             String tempPermitType = "";
@@ -2103,7 +2195,7 @@ public class WolfParkingApplication {
 
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message during fee calcuation" );
         }
 
         // Assigns the fee based off the category of the permit
@@ -2151,7 +2243,8 @@ public class WolfParkingApplication {
      *            the license number of the vehicle relevant to the citation
      */
     public static void enterCitation ( final String CitationDate, final String PaymentStatus, final String CitationTime,
-            final String CitationNumber, final String Category, final String LotName, final String LicenseNum ) {
+            final String CitationNumber, final String Category, final String LotName, final String ZoneID,
+            final String LicenseNum ) {
 
         // checkParkingViolation(LotName, LicenseNum, ZoneID, SpaceType);
 
@@ -2178,30 +2271,33 @@ public class WolfParkingApplication {
         try {
             // Insert entry into Citation table
             statement.executeUpdate(
-                    "INSERT INTO Citation (CitationDate, Fee, PaymentStatus, CitationTime, CitationNumber, Category, LotName, LicenseNum) VALUES ('"
+                    "INSERT INTO Citation (CitationDate, Fee, PaymentStatus, CitationTime, CitationNumber, Category, LotName, ZoneID, LicenseNum) VALUES ('"
                             + CitationDate + "'," + fee + ",'" + PaymentStatus + "','" + CitationTime + "','"
-                            + CitationNumber + "','" + Category + "','" + LotName + "','" + LicenseNum + "');" );
+                            + CitationNumber + "','" + Category + "','" + LotName + "','" + ZoneID + "','" + LicenseNum
+                            + "');" );
 
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when entering citation" );
         }
     }
 
     public static void updateCitationByInput ( final Scanner scanner ) {
-        System.out.println( "Enter the citation number and the new category (e.g., c1, No Permit):" );
+        System.out.println(
+                "Enter the citation number, the new citation number, and the new category (e.g., 'c1', 'c2', 'No Permit'):" );
         String input = scanner.nextLine();
         String[] parts = input.split( "," );
 
-        if ( parts.length < 2 ) {
+        if ( parts.length < 3 ) {
             System.out.println( "Invalid input format. Please enter the citation number and the new category." );
             return;
         }
 
         String citationNumber = parts[0].trim();
-        String category = parts[1].trim();
+        String newCitationNumber = parts[1].trim();
+        String category = parts[2].trim();
 
-        updateCitation( citationNumber, category );
+        updateCitation( citationNumber, newCitationNumber, category );
 
     }
 
@@ -2214,7 +2310,8 @@ public class WolfParkingApplication {
      * @param Category
      *            the new category for the updated citation entry
      */
-    public static void updateCitation ( final String citationNumber, final String category ) {
+    public static void updateCitation ( final String citationNumber, final String newCitationNumber,
+            final String category ) {
         ResultSet rs;
 
         String tempLicenseNum = "";
@@ -2232,6 +2329,17 @@ public class WolfParkingApplication {
             System.out.println( "Error trying to retrieve permit information" );
         }
 
+        if ( newCitationNumber.length() != 0 || newCitationNumber != null ) {
+            try {
+                // Updating Citation entry category
+                statement.executeUpdate( "Update Citation SET CitationNumber = '" + newCitationNumber
+                        + "' WHERE CitationNumber = '" + citationNumber + "';" );
+            }
+            catch ( SQLException e ) {
+                System.out.println( "Error message when updating citation number" );
+            }
+        }
+
         if ( category.length() != 0 || category != null ) {
             double fee = feeCalculation( category, tempLicenseNum );
             try {
@@ -2240,7 +2348,7 @@ public class WolfParkingApplication {
                         + " WHERE CitationNumber = '" + citationNumber + "';" );
             }
             catch ( SQLException e ) {
-                System.out.println( "Error message" );
+                System.out.println( "Error message when updating citation category" );
             }
         }
 
@@ -2270,7 +2378,7 @@ public class WolfParkingApplication {
             statement.executeUpdate( "DELETE FROM Citation WHERE CitationNumber = '" + CitationNumber + "';" );
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when deleting citation" );
         }
     }
 
@@ -2403,7 +2511,7 @@ public class WolfParkingApplication {
                     + CitationNumber + "';" );
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when requesting appeal" );
         }
     }
 
@@ -2492,7 +2600,7 @@ public class WolfParkingApplication {
             System.out.println( sb.toString() );
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when getting current violation" );
         }
     }
 
@@ -2513,7 +2621,7 @@ public class WolfParkingApplication {
             System.out.println( sb.toString() );
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error message when getting employee zone" );
         }
     }
 
@@ -2648,7 +2756,7 @@ public class WolfParkingApplication {
             statement.executeUpdate( "use oapatel2;" );
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message" );
+            System.out.println( "Error when loading demo data" );
         }
 
         createAllTables();
@@ -2688,7 +2796,7 @@ public class WolfParkingApplication {
 
             // Creating Permit table
             statement.executeUpdate( "CREATE TABLE Permit (" + " PermitID VARCHAR(20) NOT NULL,"
-                    + " DriverID VARCHAR(20) NOT NULL, LicenseNum VARCHAR(20) NOT NULL, ZoneID VARCHAR(2) NOT NULL, LotName VARCHAR(20),"
+                    + " DriverID VARCHAR(20) NOT NULL, LicenseNum VARCHAR(20) NOT NULL, ZoneID VARCHAR(2) NOT NULL, LotName VARCHAR(128),"
                     + " StartDate DATE NOT NULL," + " ExpDate DATE NOT NULL," + " ExpTime TIME NOT NULL,"
                     + " SpaceType VARCHAR(20) NOT NULL,"
                     + " PermitType VARCHAR(20) NOT NULL CHECK (PermitType IN ('residential', 'commuter', 'peak hours', 'special event', 'Park & Ride')),"
@@ -2698,46 +2806,18 @@ public class WolfParkingApplication {
                     + "FOREIGN KEY (LotName, ZoneID) REFERENCES Zone(LotName, ZoneID) ON UPDATE CASCADE ON DELETE CASCADE"
                     + ");" );
 
-            // Creating Citation table using SpaceType and ZoneID
-            // statement.executeUpdate( "CREATE TABLE Citation (" +
-            // "CitationNumber VARCHAR(32) NOT NULL, "
-            // + "LotName VARCHAR(128) NOT NULL, " +
-            // "ZoneID VARCHAR(2) NOT NULL, " + " SpaceType VARCHAR(20) NOT NULL
-            // CHECK (SpaceType IN ('electric', 'handicap', Ï'compact car',
-            // 'regular'))," +
-            // "LicenseNum VARCHAR(128) NOT NULL, " + "CitationDate DATE NOT
-            // NULL, " + "Fee DOUBLE, "
-            // + "PaymentStatus VARCHAR(32) NOT NULL CHECK (PaymentStatus IN
-            // ('paid', 'unpaid', 'in appeal')), "
-            // + "CitationTime TIME NOT NULL, " + "Category VARCHAR(128) NOT
-            // NULL, "
-            // + "CHECK ((Category = 'Invalid Permit' AND Fee = 25) OR "
-            // + "(Category = 'Expired Permit' AND Fee = 30) OR " + "(Category =
-            // 'No Permit' AND Fee = 40) OR "
-            // + "(Category = 'Invalid Permit' AND Fee = 12.5) OR "
-            // + "(Category = 'Expired Permit' AND Fee = 15) OR " + "(Category =
-            // 'No Permit' AND Fee = 20)), "
-            // + "PRIMARY KEY (CitationNumber), "
-            // + "FOREIGN KEY (LotName) REFERENCES ParkingLot (LotName) ON
-            // UPDATE ON DELETE CASCADE," +
-            // "FOREIGN KEY (LotName, ZoneID) REFERENCES Zone (LotName, ZoneID)
-            // ON UPDATE CASCADE ON DELETE CASCADE, " +
-            // "FOREIGN KEY (LicenseNum) REFERENCES Vehicle (LicenseNum) ON
-            // UPDATE CASCADE ON DELETE CASCADE"
-            // + ");" );
-
             // Creating Citation table
             statement.executeUpdate( "CREATE TABLE Citation (" + "CitationNumber VARCHAR(32) NOT NULL, "
-                    + "LotName VARCHAR(128) NOT NULL, " + "LicenseNum VARCHAR(128) NOT NULL, "
-                    + "CitationDate DATE NOT NULL, " + "Fee DOUBLE, "
-                    + "PaymentStatus VARCHAR(32) NOT NULL CHECK (PaymentStatus IN ('paid', 'unpaid', 'in appeal')), "
+                    + "LotName VARCHAR(128) NOT NULL, " + "ZoneID VARCHAR(2) NOT NULL, "
+                    + "LicenseNum VARCHAR(128) NOT NULL, " + "CitationDate DATE NOT NULL, " + "Fee DOUBLE, "
+                    + "PaymentStatus VARCHAR(32) NOT NULL CHECK (PaymentStatus IN ('paid', 'due', 'in appeal')), "
                     + "CitationTime TIME NOT NULL, " + "Category VARCHAR(128) NOT NULL, "
                     + "CHECK ((Category = 'Invalid Permit' AND Fee = 25) OR "
                     + "(Category = 'Expired Permit' AND Fee = 30) OR " + "(Category = 'No Permit' AND Fee = 40) OR "
                     + "(Category = 'Invalid Permit' AND Fee = 12.5) OR "
                     + "(Category = 'Expired Permit' AND Fee = 15) OR " + "(Category = 'No Permit' AND Fee = 20)), "
                     + "PRIMARY KEY (CitationNumber), "
-                    + "FOREIGN KEY (LotName) REFERENCES ParkingLot (LotName) ON UPDATE CASCADE ON DELETE CASCADE, "
+                    + "FOREIGN KEY (LotName, ZoneID) REFERENCES Zone (LotName, ZoneID) ON UPDATE CASCADE ON DELETE CASCADE, "
                     + "FOREIGN KEY (LicenseNum) REFERENCES Vehicle (LicenseNum) ON UPDATE CASCADE ON DELETE CASCADE"
                     + ");" );
 
@@ -2790,11 +2870,10 @@ public class WolfParkingApplication {
                 "2023-01-01", "2023-11-15", "06:00:00" );
 
         // CITATION
-        enterCitation( "2024-01-01", "PAID", "08:00:00", "NP1", "No Permit", "Dan Allen Parking Deck", "VAN-9910" );
-        enterCitation( "2023-10-01", "DUE", "08:00:00", "EP1", "Expired Permit", "Poulton Deck", "CRICKET" );
+        enterCitation( "2024-01-01", "PAID", "08:00:00", "NP1", "No Permit", "Dan Allen Parking Deck", "AS",
+                "VAN-9910" );
+        enterCitation( "2023-10-01", "DUE", "08:00:00", "EP1", "Expired Permit", "Poulton Deck", "V", "CRICKET" );
 
     }
 
 }
-
-// 2023-01-01,35,Dan Allen Parking Deck,No Permit,CRICKET,NP7
