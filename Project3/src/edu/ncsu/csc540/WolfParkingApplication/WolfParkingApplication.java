@@ -1085,7 +1085,7 @@ public class WolfParkingApplication {
 
         }
         catch ( SQLException e ) {
-            System.out.println( "Error message: " + e.getMessage() );
+            System.out.println( "Error message finding available space number" );
             return -1;
         }
     }
@@ -1155,21 +1155,28 @@ public class WolfParkingApplication {
 
         if ( currStatus.equals( "V" ) ) {
 
-            if ( !permitType.equals( "V" ) ) {
-                canExecute = false;
-                System.out.println( "Visitor can only park in zone V" );
-            }
+            // if ( !permitType.equals( "V" ) ) {
+            // canExecute = false;
+            // System.out.println( "Visitor can only park in zone V" );
+            // }
+
             if ( permitCount >= 1 ) {
                 canExecute = false;
                 System.out.println( "Visitor already has one permit" );
             }
+
         }
-        else if ( currStatus.equals( "S" ) ) {
-            if ( ! ( spaceType.equals( "AS" ) || spaceType.equals( "BS" ) || spaceType.equals( "CS" )
-                    || spaceType.equals( "DS" ) ) ) {
-                canExecute = false;
-                System.out.println( "Student can only park in zones AS, BS, CS, DS." );
-            }
+        else if ( currStatus.equals( "S" ) )
+
+        {
+            // if ( ! ( spaceType.equals( "AS" ) || spaceType.equals( "BS" ) ||
+            // spaceType.equals( "CS" )
+            // || spaceType.equals( "DS" ) ) ) {
+            // canExecute = false;
+            // System.out.println( "Student can only park in zones AS, BS, CS,
+            // DS."
+            // );
+            // }
 
             if ( permitCount >= 2 ) {
                 canExecute = false;
@@ -1212,11 +1219,13 @@ public class WolfParkingApplication {
         }
         else if ( currStatus.equals( "E" ) ) {
 
-            if ( ! ( spaceType.equals( "A" ) || spaceType.equals( "B" ) || spaceType.equals( "C" )
-                    || spaceType.equals( "D" ) ) ) {
-                canExecute = false;
-                System.out.println( "Employee can only park in zones A, B, C, D." );
-            }
+            // if ( ! ( spaceType.equals( "A" ) || spaceType.equals( "B" ) ||
+            // spaceType.equals( "C" )
+            // || spaceType.equals( "D" ) ) ) {
+            // canExecute = false;
+            // System.out.println( "Employee can only park in zones A, B, C, D."
+            // );
+            // }
             if ( permitCount >= 3 ) {
                 canExecute = false;
                 System.out.println( "Employee already has three permits" );
@@ -1326,6 +1335,66 @@ public class WolfParkingApplication {
      *            lot name of the permit
      *
      */
+    // public static void enterPermitInfo ( final String permitID, final String
+    // permitType, final String zoneID,
+    // final String lotName, final String driverID, final String licenseNum,
+    // final String spaceType,
+    // final String startDate, final String expDate, final String expTime ) {
+    //
+    // try {
+    // // Start a transaction
+    // connection.setAutoCommit( false );
+    //
+    // // Admin attempts to enter Permit
+    // statement.executeUpdate( "INSERT INTO Permit (PermitID, SpaceType,
+    // StartDate, ExpDate, DriverID, "
+    // + "PermitType, ExpTime, LicenseNum, ZoneID, LotName) VALUES ('" +
+    // permitID + "','" + spaceType
+    // + "','" + startDate + "','" + expDate + "','" + driverID + "','" +
+    // permitType + "','" + expTime
+    // + "','" + licenseNum + "','" + zoneID + "','" + lotName + "');" );
+    //
+    // // Check to see if the permit can be created based on permit
+    // // restrictions
+    // boolean validPermit = checkValidPermit( permitID, permitType, zoneID,
+    // lotName, driverID, licenseNum,
+    // spaceType, startDate, expDate, expTime );
+    // int spaceNumber = returnAvailableSpaceNumber( spaceType, lotName );
+    //
+    // if ( validPermit && spaceNumber != -1 ) {
+    // // If payment is successful, commit the transaction to update
+    // // payment status
+    // updateSpace( spaceNumber, lotName, spaceType, "occupied" );
+    // connection.commit();
+    // }
+    // else {
+    // // Rollback the transaction if the payment is unsuccessful
+    // connection.rollback();
+    // }
+    //
+    // }
+    // catch ( SQLException e ) {
+    // System.out.println( "Invalid Permit" );
+    // try {
+    // // Roll back the transaction in case of an error
+    // connection.rollback();
+    // System.out.println( "Transaction rolled back." );
+    // }
+    // catch ( SQLException ex ) {
+    // System.out.println( "Error occurred during rollback: " );
+    // }
+    // }
+    // finally {
+    // try {
+    // // Reset auto-commit to its default state
+    // connection.setAutoCommit( true );
+    // }
+    // catch ( SQLException ex ) {
+    // System.out.println( "Error occurred while resetting auto-commit: " );
+    // }
+    // }
+    // }
+
     public static void enterPermitInfo ( final String permitID, final String permitType, final String zoneID,
             final String lotName, final String driverID, final String licenseNum, final String spaceType,
             final String startDate, final String expDate, final String expTime ) {
@@ -1334,12 +1403,6 @@ public class WolfParkingApplication {
             // Start a transaction
             connection.setAutoCommit( false );
 
-            // Admin attempts to enter Permit
-            statement.executeUpdate( "INSERT INTO Permit (PermitID, SpaceType, StartDate, ExpDate, DriverID, "
-                    + "PermitType, ExpTime, LicenseNum, ZoneID, LotName) VALUES ('" + permitID + "','" + spaceType
-                    + "','" + startDate + "','" + expDate + "','" + driverID + "','" + permitType + "','" + expTime
-                    + "','" + licenseNum + "','" + zoneID + "','" + lotName + "');" );
-
             // Check to see if the permit can be created based on permit
             // restrictions
             boolean validPermit = checkValidPermit( permitID, permitType, zoneID, lotName, driverID, licenseNum,
@@ -1347,26 +1410,35 @@ public class WolfParkingApplication {
             int spaceNumber = returnAvailableSpaceNumber( spaceType, lotName );
 
             if ( validPermit && spaceNumber != -1 ) {
-                // If payment is successful, commit the transaction to update
-                // payment status
+                // Insert Permit into the database
+                statement.executeUpdate(
+                        "INSERT INTO Permit (PermitID, SpaceType, StartDate, ExpDate, DriverID, PermitType, ExpTime, LicenseNum, ZoneID, LotName) VALUES ('"
+                                + permitID + "','" + spaceType + "','" + startDate + "','" + expDate + "','" + driverID
+                                + "','" + permitType + "','" + expTime + "','" + licenseNum + "','" + zoneID + "','"
+                                + lotName + "');" );
+
+                // Update space to occupied
                 updateSpace( spaceNumber, lotName, spaceType, "occupied" );
+
+                // Commit the transaction
                 connection.commit();
             }
             else {
-                // Rollback the transaction if the payment is unsuccessful
+                // Rollback the transaction if the permit is invalid or no space
+                // is available
                 connection.rollback();
+                System.out.println( "Transaction rolled back due to invalid permit or no available space." );
             }
-
         }
         catch ( SQLException e ) {
-            System.out.println( "Invalid Permit" );
+            System.out.println( "SQLException occurred: " + e.getMessage() );
             try {
                 // Roll back the transaction in case of an error
                 connection.rollback();
-                System.out.println( "Transaction rolled back." );
+                System.out.println( "Transaction rolled back due to SQLException." );
             }
             catch ( SQLException ex ) {
-                System.out.println( "Error occurred during rollback: " );
+                System.out.println( "Error occurred during rollback: " + ex.getMessage() );
             }
         }
         finally {
@@ -1375,7 +1447,7 @@ public class WolfParkingApplication {
                 connection.setAutoCommit( true );
             }
             catch ( SQLException ex ) {
-                System.out.println( "Error occurred while resetting auto-commit: " );
+                System.out.println( "Error occurred while resetting auto-commit: " + ex.getMessage() );
             }
         }
     }
@@ -2703,12 +2775,7 @@ public class WolfParkingApplication {
         enterZone( "A", "Partners Way Deck" );
         enterZone( "AS", "Dan Allen Parking Deck" );
 
-        // spaces
-        // enterSpace(1, "Poulton Deck", "regular", "available");
-        // enterSpace(2, "Partners Way Deck", "compact car", "not available");
-        // enterSpace(3, "Dan Allen Parking Deck", "electric", "available");
-
-        // LOT NAME MIGHT NEED TO GO IN HERE
+        // PERMITS
         enterPermitInfo( "VSBF1C", "Commuter", "V", "Poulton Deck", "7729119111", "SBF", "Regular", "2023-01-01",
                 "2024-01-01", "06:00:00" );
         enterPermitInfo( "EJC1R", "Residential", "A", "Partners Way Deck", "266399121", "Clay1", "Electric",
@@ -2722,38 +2789,9 @@ public class WolfParkingApplication {
         enterPermitInfo( "VCX1SE", "Special event", "V", "Poulton Deck", "9194789124", "PROFX", "Handicap",
                 "2023-01-01", "2023-11-15", "06:00:00" );
 
-        // // CHANGE LATER
-        // enterPermitInfo("VSBF1C", "Commuter", "V", null, "7729119111", "SBF",
-        // "Regular", "2023-01-01", "2024-01-01",
-        // "06:00:00");
-        // enterPermitInfo("EJC1R", "Residential", "A", null, "266399121",
-        // "Clay1",
-        // "Electric", "2010-01-01", "2030-01-01",
-        // "06:00:00");
-        // enterPermitInfo("EJH2C", "Commuter", "A", null, "366399121",
-        // "Hicks1",
-        // "Regular", "2023-01-01", "2024-01-01",
-        // "06:00:00");
-        // enterPermitInfo("EIG3C", "Commuter", "A", null, "466399121",
-        // "Garcia1",
-        // "Regular", "2023-01-01", "2024-01-01",
-        // "06:00:00");
-        // enterPermitInfo("SST1R", "Residential", "AS", null, "122765234",
-        // "CRICKET",
-        // "Compact Car", "2022-01-01",
-        // "2023-09-30", "06:00:00");
-        // enterPermitInfo("VCX1SE", "Special event", "V", null, "9194789124",
-        // "PROFX",
-        // "Handicap", "2023-01-01",
-        // "2023-11-15", "06:00:00");
-
         // CITATION
         enterCitation( "2024-01-01", "PAID", "08:00:00", "NP1", "No Permit", "Dan Allen Parking Deck", "VAN-9910" );
-        enterCitation( "2023-10-01", "DUE", "08:00:00", "EP1", "Expired Permit", "Poulton Lot", "CRICKET" ); // "Poulton
-        // Lot"
-        // or
-        // "Poulton
-        // Deck"
+        enterCitation( "2023-10-01", "DUE", "08:00:00", "EP1", "Expired Permit", "Poulton Deck", "CRICKET" );
 
     }
 
