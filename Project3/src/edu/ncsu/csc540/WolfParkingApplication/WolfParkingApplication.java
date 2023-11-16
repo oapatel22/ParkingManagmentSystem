@@ -13,12 +13,10 @@ import java.util.Calendar;
 import java.util.Random;
 import java.util.Scanner;
 
-import javax.naming.spi.DirStateFactory.Result;
-
 public class WolfParkingApplication {
 
     static Scanner scanner;
-    static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/stithi";
+    static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/oapatel2";
 
     private static Connection connection = null;
     private static Statement statement = null;
@@ -27,218 +25,204 @@ public class WolfParkingApplication {
     public static void main(final String[] args) {
 
         initialize();
-
-        // enterPermitInfo("12", "commuter", "A", "Test", "dgoggins", "PROFX",
-        // "Handicap", "2023-01-01",
-        // "2023-11-15", "06:00:00");
         // preloadDemoData();
 
-        scanner = new Scanner(System.in);
-        System.out.println("Welcome to the WolfParking Managment System!");
+        // scanner = new Scanner(System.in);
+        // System.out.println("Welcome to the WolfParking Managment System!");
 
-        while (true) {
-            System.out.println("1) Information processing");
-            System.out.println("2) Maintaining permits and vehicle information for each driver");
-            System.out.println("3) Generating and maintaining citations");
-            System.out.println("4) Reports");
-            System.out.print("Select the major task you want to perform (or enter 'q' to exit): ");
-            String majorTask = scanner.next();
-            if (majorTask.equals("q")) {
-                break;
-            }
-            switch (majorTask) {
-                case "1": // 1) Information processing
-                    System.out.println("1) Enter Driver Information");
-                    System.out.println("2) Update Driver Information");
-                    System.out.println("3) Delete Driver Information");
-                    System.out.println("4) Enter Lot Information");
-                    System.out.println("5) Update Lot Information");
-                    System.out.println("6) Delete Parking Lot Information");
-                    System.out.println("7) Enter Zone Information");
-                    System.out.println("8) Update Zone Information");
-                    System.out.println("9) Delete Zone Information");
-                    System.out.println("10) Enter Space Information");
-                    System.out.println("11) Update Space Information");
-                    System.out.println("12) Delete Space Information");
-                    System.out.println("13) Assign Zone To Lot");
-                    System.out.println("14) Assign Space To Lot");
-                    System.out.println("15) Assign Type To Space");
-                    System.out.println("16) Update Payment Status");
-                    System.out.print("Select the operation you want to perform: ");
-                    String operation1 = scanner.next();
-                    switch (operation1) {
-                        case "1":
-                            enterDriver();
-                            break;
-                        case "2":
-                            updateDriverInformation();
-                            break;
-                        case "3":
-                            deleteDriver();
-                            break;
-                        case "4":
-                            enterLot();
-                            break;
-                        case "5":
-                            updateLotInformation();
-                            break;
-                        case "6":
-                            deleteLot();
-                            break;
-                        case "7":
-                            enterZone();
-                            break;
-                        case "8":
-                            updateZone();
-                            break;
-                        case "9":
-                            deleteZone();
-                            break;
-                        case "10":
-                            enterSpace();
-                            break;
-                        case "11":
-                            updateSpace();
-                            break;
-                        case "12":
-                            deleteSpace();
-                            break;
-                        case "13":
-                            assignZoneToLot();
-                            break;
-                        case "14":
-                            assignSpaceToLot();
-                            break;
-                        case "15":
-                            assignTypeToSpace();
-                            break;
-                        case "16":
-                            updatePaymentStatus();
-                            break;
-                    }
-                    break;
-                case "2": // 2) Maintaining permits and vehicle information for each driver
-                    System.out.println("1) Get Driver Info");
-                    System.out.println("2) Enter Permit Info");
-                    System.out.println("3) Update Permit Info");
-                    System.out.println("4) Delete Permit Info");
-                    System.out.println("5) Assign Permit Info");
-                    System.out.println("6) ?");
-                    System.out.println("7) Enter Vehicle Information");
-                    System.out.println("8) Update Vehicle Information");
-                    System.out.println("9) Delete Vehicle Information");
-                    System.out.println("10) ?");
-                    System.out.print("Select the operation you want to perform: ");
-                    String operation2 = scanner.next();
-                    switch (operation2) {
-                        case "1":
-                            // getDriverInfo();
-                            break;
-                        case "2":
-                            // enterPermitInfo();
-                            break;
-                        case "3":
-                            // updatePermit();
-                            break;
-                        case "4":
-                            // deletePermit();
-                            break;
-                        case "5":
-                            // assignPermit();
-                            break;
-                        case "6":
-                            // getPermitInfo(); // don't need this right?
-                            break;
-                        case "7":
-                            // enterVehicle();
-                            break;
-                        case "8":
-                            // updateVehicle();
-                            break;
-                        case "9":
-                            // deleteVehicle();
-                            break;
-                        case "10":
-                            // assignVehicle(); // don't need this right?
-                            break;
-                    }
-                    break;
-                case "3": // 3) Generating and maintaining citations
-                    System.out.println("1) Enter Citation Information");
-                    System.out.println("2) Update Citation Information");
-                    System.out.println("3) Delete Citation Information");
-                    System.out.println("4) Check Parking Violation");
-                    System.out.println("5) Pay Citation");
-                    System.out.println("6) Request Appeal");
-                    System.out.print("Select the operation you want to perform: ");
-                    String operation3 = scanner.next();
-                    switch (operation3) {
-                        case "1":
-                            enterCitationByInput(scanner);
-                            break;
-                        case "2":
-                            updateCitationByInput(scanner);
-                            break;
-                        case "3":
-                            deleteCitationByInput(scanner);
-                            break;
-                        case "4":
-                            checkParkingViolationByInput(scanner);
-                            break;
-                        case "5":
-                            payCitationByInput(scanner);
-                            break;
-                        case "6":
-                            requestAppealByInput(scanner);
-                            break;
-                    }
-                    break;
-                case "4": // 4) Reports
-                    System.out.println("1) Citation Report By Time");
-                    System.out.println("2) Get Zones");
-                    System.out.println("3) Get Current Violations");
-                    System.out.println("4) Get Employee Zone");
-                    System.out.println("5) Get Permit Information");
-                    System.out.println("6) Get Available Spaces");
-                    System.out.print("Select the operation you want to perform: ");
-                    String operation4 = scanner.next();
-                    switch (operation4) {
-                        case "1":
-                            getCitationReportByTime(scanner);
-                            break;
-                        case "2":
-                            getZones(scanner);
-                            break;
-                        case "3":
-                            getCurrentViolation();
-                            break;
-                        case "4":
-                            getEmployeeZone();
-                            break;
-                        case "5":
-                            getPermitInformation(scanner);
-                            break;
-                        case "6":
-                            getAvailableSpaces(scanner);
-                            break;
-                    }
-                    break;
-            }
+        // while (true) {
+        //     System.out.println("1) Information processing");
+        //     System.out.println("2) Maintaining permits and vehicle information for each driver");
+        //     System.out.println("3) Generating and maintaining citations");
+        //     System.out.println("4) Reports");
+        //     System.out.print("Select the major task you want to perform (or enter 'q' to exit): ");
+        //     String majorTask = scanner.next();
+        //     if (majorTask.equals("q")) {
+        //         break;
+        //     }
+        //     switch (majorTask) {
+        //         case "1": // 1) Information processing
+        //             System.out.println("1) Enter Driver Information");
+        //             System.out.println("2) Update Driver Information");
+        //             System.out.println("3) Delete Driver Information");
+        //             System.out.println("4) Enter Lot Information");
+        //             System.out.println("5) Update Lot Information");
+        //             System.out.println("6) Delete Parking Lot Information");
+        //             System.out.println("7) Enter Zone Information");
+        //             System.out.println("8) Update Zone Information");
+        //             System.out.println("9) Delete Zone Information");
+        //             System.out.println("10) Enter Space Information");
+        //             System.out.println("11) Update Space Information");
+        //             System.out.println("12) Delete Space Information");
+        //             System.out.println("13) Assign Zone To Lot");
+        //             System.out.println("14) Assign Space To Lot");
+        //             System.out.println("15) Assign Type To Space");
+        //             System.out.println("16) Update Payment Status");
+        //             System.out.print("Select the operation you want to perform: ");
+        //             String operation1 = scanner.next();
+        //             switch (operation1) {
+        //                 case "1":
+        //                     enterDriverByInput(scanner);
+        //                     break;
+        //                 case "2":
+        //                     updateDriverInformationByInput(scanner);
+        //                     break;
+        //                 case "3":
+        //                     deleteDriverByInput(scanner);
+        //                     break;
+        //                 case "4":
+        //                     enterLotByInput(scanner);
+        //                     break;
+        //                 case "5":
+        //                     updateLotInformationByInput(scanner);
+        //                     break;
+        //                 case "6":
+        //                     deleteLotByInput(scanner);
+        //                     break;
+        //                 case "7":
+        //                     enterZoneByInput(scanner);
+        //                     break;
+        //                 case "8":
+        //                     updateZoneByInput(scanner);
+        //                     break;
+        //                 case "9":
+        //                     deleteZoneByInput(scanner);
+        //                     break;
+        //                 case "10":
+        //                     enterSpaceByInput(scanner);
+        //                     break;
+        //                 case "11":
+        //                     updateSpaceByInput(scanner);
+        //                     break;
+        //                 case "12":
+        //                     deleteSpaceByInput(scanner);
+        //                     break;
+        //                 case "13":
+        //                     assignZoneToLotByInput(scanner);
+        //                     break;
+        //                 case "14":
+        //                     assignSpaceToLotByInput(scanner);
+        //                     break;
+        //                 case "15":
+        //                     assignTypeToSpaceByInput(scanner);
+        //                     break;
+        //                 case "16":
+        //                     updatePaymentStatusByInput(scanner);
+        //                     break;
+        //             }
+        //             break;
+        //         case "2": // 2) Maintaining permits and vehicle information for each driver
+        //             System.out.println("1) Get Driver Info");
+        //             System.out.println("2) Enter Permit Info");
+        //             System.out.println("3) Update Permit Info");
+        //             System.out.println("4) Delete Permit Info");
+        //             System.out.println("5) Assign Permit Info");
+        //             System.out.println("6) ?");
+        //             System.out.println("7) Enter Vehicle Information");
+        //             System.out.println("8) Update Vehicle Information");
+        //             System.out.println("9) Delete Vehicle Information");
+        //             System.out.println("10) ?");
+        //             System.out.print("Select the operation you want to perform: ");
+        //             String operation2 = scanner.next();
+        //             switch (operation2) {
+        //                 case "1":
+        //                     // getDriverInfo();
+        //                     break;
+        //                 case "2":
+        //                     // enterPermitInfo();
+        //                     break;
+        //                 case "3":
+        //                     // updatePermit();
+        //                     break;
+        //                 case "4":
+        //                     // deletePermit();
+        //                     break;
+        //                 case "5":
+        //                     // assignPermit();
+        //                     break;
+        //                 case "6":
+        //                     // getPermitInfo(); // don't need this right?
+        //                     break;
+        //                 case "7":
+        //                     // enterVehicle();
+        //                     break;
+        //                 case "8":
+        //                     // updateVehicle();
+        //                     break;
+        //                 case "9":
+        //                     // deleteVehicle();
+        //                     break;
+        //                 case "10":
+        //                     // assignVehicle(); // don't need this right?
+        //                     break;
+        //             }
+        //             break;
+        //         case "3": // 3) Generating and maintaining citations
+        //             System.out.println("1) Enter Citation Information");
+        //             System.out.println("2) Update Citation Information");
+        //             System.out.println("3) Delete Citation Information");
+        //             System.out.println("4) Check Parking Violation");
+        //             System.out.println("5) Pay Citation");
+        //             System.out.println("6) Request Appeal");
+        //             System.out.print("Select the operation you want to perform: ");
+        //             String operation3 = scanner.next();
+        //             switch (operation3) {
+        //                 case "1":
+        //                     enterCitationByInput(scanner);
+        //                     break;
+        //                 case "2":
+        //                     updateCitationByInput(scanner);
+        //                     break;
+        //                 case "3":
+        //                     deleteCitationByInput(scanner);
+        //                     break;
+        //                 case "4":
+        //                     checkParkingViolationByInput(scanner);
+        //                     break;
+        //                 case "5":
+        //                     payCitationByInput(scanner);
+        //                     break;
+        //                 case "6":
+        //                     requestAppealByInput(scanner);
+        //                     break;
+        //             }
+        //             break;
+        //         case "4": // 4) Reports
+        //             System.out.println("1) Citation Report By Time");
+        //             System.out.println("2) Get Zones");
+        //             System.out.println("3) Get Current Violations");
+        //             System.out.println("4) Get Employee Zone");
+        //             System.out.println("5) Get Permit Information");
+        //             System.out.println("6) Get Available Spaces");
+        //             System.out.print("Select the operation you want to perform: ");
+        //             String operation4 = scanner.next();
+        //             switch (operation4) {
+        //                 case "1":
+        //                     getCitationReportByTime(scanner);
+        //                     break;
+        //                 case "2":
+        //                     getZones(scanner);
+        //                     break;
+        //                 case "3":
+        //                     getCurrentViolation();
+        //                     break;
+        //                 case "4":
+        //                     getEmployeeZone();
+        //                     break;
+        //                 case "5":
+        //                     getPermitInformation(scanner);
+        //                     break;
+        //                 case "6":
+        //                     getAvailableSpaces(scanner);
+        //                     break;
+        //             }
+        //             break;
+        //     }
 
-        }
+        // }
 
-        scanner.close();
+        // scanner.close();
         close();
-    }
-
-    public static void enterSecurity(final Integer securityID) {
-        try {
-            // Inserting data into Security table
-            statement.executeUpdate("INSERT INTO Security (SecurityID) VALUES" + "(" + securityID + ");");
-        } catch (SQLException e) {
-            System.out.println("Error message");
-        }
-
     }
 
     // INFORMATION PROCESSING:
@@ -1293,7 +1277,7 @@ public class WolfParkingApplication {
      */
     public static void enterPermitInfo(final String permitID, final String permitType, final String zoneID,
             final String lotName, final String driverID, final String licenseNum, final String spaceType,
-            final String startDate, final String expDate, final String expTime) {        
+            final String startDate, final String expDate, final String expTime) {
 
         try {
             // Start a transaction
@@ -1301,14 +1285,15 @@ public class WolfParkingApplication {
 
             // Admin attempts to enter Permit
             statement.executeUpdate(
-                        "INSERT INTO Permit (PermitID, SpaceType, StartDate, ExpDate, DriverID, PermitType, ExpTime, LicenseNum, ZoneID, LotName) VALUES ('"
-                                + permitID + "','" + spaceType + "','" + startDate + "','" + expDate + "','" + driverID
-                                + "','" + permitType + "','" + expTime + "','" + licenseNum + "','" + zoneID + "','"
-                                + lotName + "');");
-            
+                    "INSERT INTO Permit (PermitID, SpaceType, StartDate, ExpDate, DriverID, PermitType, ExpTime, LicenseNum, ZoneID, LotName) VALUES ('"
+                            + permitID + "','" + spaceType + "','" + startDate + "','" + expDate + "','" + driverID
+                            + "','" + permitType + "','" + expTime + "','" + licenseNum + "','" + zoneID + "','"
+                            + lotName + "');");
+
             // Check to see if the permit can be created based on permit restrictions
-            boolean validPermit = checkValidPermit(permitID, permitType, zoneID, lotName, driverID, licenseNum, spaceType, startDate, expDate, expTime)
-            int spaceNumber = returnAvailableSpaceNumber(spaceType,lotName);
+            boolean validPermit = checkValidPermit(permitID, permitType, zoneID, lotName, driverID, licenseNum,
+                    spaceType, startDate, expDate, expTime);
+            int spaceNumber = returnAvailableSpaceNumber(spaceType, lotName);
             if (validPermit && spaceNumber != -1) {
                 // If payment is successful, commit the transaction to update payment status
                 updateSpace(spaceNumber, lotName, spaceType, "occupied");
@@ -1552,6 +1537,8 @@ public class WolfParkingApplication {
                 }
 
             }
+        } else {
+            System.out.println("Error message");
         }
 
     }
@@ -1687,7 +1674,9 @@ public class WolfParkingApplication {
         boolean validPermit = checkValidPermit(permitID, tempPermitType, tempZoneID, tempLotName, driverID,
                 tempLicenseNum, tempSpaceType, tempStartDate, tempExpDate, tempExpTime);
 
-        if (validPermit) {
+        int spaceNumber = returnAvailableSpaceNumber(tempSpaceType, tempLotName);
+        if (spaceNumber != -1 && validPermit) {
+
             try {
                 statement.executeUpdate(
                         "UPDATE PERMIT SET DriverID = '" + driverID + "'WHERE PermitID = '" + permitID + "';");
@@ -1695,6 +1684,8 @@ public class WolfParkingApplication {
             } catch (SQLException e) {
                 System.out.println("Error message");
             }
+        } else {
+            System.out.println("Permit cannot be assigned");
         }
     }
 
@@ -1841,8 +1832,10 @@ public class WolfParkingApplication {
      * @param licenseNum license plate number of the vehicle to delete
      */
     public static void deleteVehicle(final String licenseNum) {
+        // NEEDS TO BE UPDATED
+
         try {
-            statement.executeUpdate("DELETE FROM Permit WHERE LicenseNum ='" + licenseNum + "';");
+            statement.executeUpdate("DELETE FROM Vehicle WHERE LicenseNum ='" + licenseNum + "';");
 
         } catch (SQLException e) {
             System.out.println("Error message");
@@ -1924,7 +1917,6 @@ public class WolfParkingApplication {
         }
 
         enterCitation(citationDate, "unpaid", time, citationNumber, category, lotName, licenseNum);
-        // scnr2.close();
     }
 
     public static double feeCalculation(String category, String licenseNum) {
@@ -1937,7 +1929,6 @@ public class WolfParkingApplication {
             ResultSet rs = statement.executeQuery(
                     "SELECT SpaceType FROM Permit WHERE LicenseNum ='" + licenseNum + "';");
 
-            String permitType = "";
             int rowCount = 0;
             String tempPermitType = "";
             String tempPermitType2 = "";
@@ -2002,28 +1993,26 @@ public class WolfParkingApplication {
             final String CitationTime, final String CitationNumber, final String Category, final String LotName,
             final String LicenseNum) {
 
-                checkParkingViolation(LotName, LicenseNum, ZoneID, SpaceType);
+        // checkParkingViolation(LotName, LicenseNum, ZoneID, SpaceType);
 
-          try {
-            // Find all permits with the same license number
-            ResultSet rs = statement.executeQuery(
-                    "SELECT SpaceType, ZoneId, LotName FROM Permit WHERE LicenseNum ='" + LicenseNum + "';");
+        // try {
+        // // Find all permits with the same license number
+        // ResultSet rs = statement.executeQuery(
+        // "SELECT SpaceType, ZoneId, LotName FROM Permit WHERE LicenseNum ='" +
+        // LicenseNum + "';");
 
-            String spaceType = "";
-            String zoneID = "";
+        // String spaceType = "";
+        // String zoneID = "";
 
-    
-            if (rs.next()) {
-                spaceType = rs.getString("SpaceType");
-                zoneID = rs.getString("ZoneID");
-            }
+        // if (rs.next()) {
+        // spaceType = rs.getString("SpaceType");
+        // zoneID = rs.getString("ZoneID");
+        // }
 
-        } catch (SQLException e) {
-            System.out.println("Error message");
-            
-        }
+        // } catch (SQLException e) {
+        // System.out.println("Error message");
 
-     
+        // }
 
         double fee = feeCalculation(Category, LicenseNum);
         try {
@@ -2135,25 +2124,27 @@ public class WolfParkingApplication {
         checkParkingViolation(lotName, licenseNum, zoneID, spaceType);
     }
 
-    public static boolean checkParkingViolation(final String LotName, final String LicenseNum, String ZoneID, String SpaceType) {
+    public static boolean checkParkingViolation(final String LotName, final String LicenseNum, String ZoneID,
+            String SpaceType) {
         ResultSet rs;
         int count = 0;
-        try{
-            rs = statement.executeQuery("SELECT COUNT(*) FROM Permit WHERE LotName = '" + LotName + "' AND ZoneID = '" + ZoneID + "' AND SpaceType = '" + SpaceType + "' AND LicenseNum ='" + LicenseNum + "';");
+        try {
+            rs = statement.executeQuery("SELECT COUNT(*) FROM Permit WHERE LotName = '" + LotName + "' AND ZoneID = '"
+                    + ZoneID + "' AND SpaceType = '" + SpaceType + "' AND LicenseNum ='" + LicenseNum + "';");
 
-            if(rs.next()) {
+            if (rs.next()) {
                 count = rs.getInt(0);
             }
 
-            if(count > 0) {
+            if (count > 0) {
                 return false;
             } else {
                 return true;
             }
-        }
-        catch(SQLException exception) {
+        } catch (SQLException exception) {
             System.out.println("SQL error");
-        }   
+            return false;
+        }
     }
 
     public static void payCitationByInput(Scanner scanner) {
@@ -2247,49 +2238,7 @@ public class WolfParkingApplication {
         }
     }
 
-    // Task and operations 4: Reports
-
-    // /**
-    // * Returns a table titled TotalCitations with the name of the parking lot and
-    // * the associated number of citation for each lot within a given time frame
-    // *
-    // * @param StartDate the earliest the citation was given
-    // * @param EndDate the latest the citation was given
-    // */
-    // public static void getCitationReportByTime() {
-
-    // Scanner line = new Scanner(System.in);
-    // String input = line.nextLine();
-    // Scanner attr = new Scanner(input);
-    // attr.useDelimiter(", ");
-    // final String StartDate = attr.next();
-
-    // System.out.println("state: " + StartDate);
-
-    // final String EndDate = attr.next();
-    // System.out.println("end: " + EndDate);
-    // attr.close();
-    // line.close();
-
-    // try {
-    // ResultSet rs = statement.executeQuery(
-    // "SELECT p.LotName, COUNT(c.CitationNumber) AS TotalCitations FROM ParkingLot
-    // p LEFT JOIN Citation c ON p.LotName = c.LotName AND c.CitationDate BETWEEN '"
-    // + StartDate + "' AND '" + EndDate + "' GROUP BY p.LotName");
-    // String s = "";
-    // StringBuilder sb = new StringBuilder(s);
-
-    // while (rs.next()) {
-    // sb.append(rs.getString("LotName"));
-    // sb.append(" ");
-    // sb.append(rs.getString("TotalCitations"));
-    // sb.append("\n");
-    // }
-    // System.out.println(sb.toString());
-    // } catch (SQLException e) {
-    // System.out.println("Error message");
-    // }
-    // }
+    // REPORTS
 
     /**
      * Prompts the user to enter a start date and an end date, then retrieves and
@@ -2327,34 +2276,8 @@ public class WolfParkingApplication {
         } catch (SQLException e) {
             System.out.println("Error message: " + e.getMessage());
         }
-        // finally {
-        // scnr.close();
-        // }
+
     }
-
-    // /**
-    // * Return a list of zones in a given Parking Lot
-    // *
-    // * @param LotName the name of the parking lot
-    // */
-    // public static void getZones(final String LotName) {
-    // try {
-    // ResultSet rs = statement.executeQuery("SELECT * FROM Zone WHERE LotName = '"
-    // + LotName + "';");
-    // String s = "";
-    // StringBuilder sb = new StringBuilder(s);
-
-    // while (rs.next()) {
-    // sb.append(rs.getString("ZoneID"));
-    // sb.append(" ");
-    // sb.append(rs.getString("LotName"));
-    // sb.append("\n");
-    // }
-    // System.out.println(sb.toString());
-    // } catch (SQLException e) {
-    // System.out.println("Error message");
-    // }
-    // }
 
     /**
      * Prompts the user to enter the name of a parking lot and then retrieves and
@@ -2380,9 +2303,7 @@ public class WolfParkingApplication {
         } catch (SQLException e) {
             System.out.println("Error message: " + e.getMessage());
         }
-        // finally {
-        // scnr.close();
-        // }
+
     }
 
     /**
@@ -2425,47 +2346,6 @@ public class WolfParkingApplication {
         }
     }
 
-    // /**
-    // * Gets the permit associated with a particular driver
-    // *
-    // * @param DriverId the id of the driver to get their permit info
-    // */
-    // public static void getPermitInformation(final String DriverId) {
-    // try {
-    // ResultSet rs = statement.executeQuery("SELECT * From Permit WHERE
-    // Permit.DriverId = '" + DriverId + "';");
-    // String s = "";
-    // StringBuilder sb = new StringBuilder(s);
-
-    // while (rs.next()) {
-    // sb.append(rs.getString("PermitID"));
-    // sb.append(" ");
-    // sb.append(rs.getString("DriverID"));
-    // sb.append(" ");
-    // sb.append(rs.getString("LicenseNum"));
-    // sb.append(" ");
-    // sb.append(rs.getString("ZoneID"));
-    // sb.append(" ");
-    // sb.append(rs.getString("LotName"));
-    // sb.append(" ");
-    // sb.append(rs.getString("StartDate"));
-    // sb.append(" ");
-    // sb.append(rs.getString("ExpDate"));
-    // sb.append(" ");
-    // sb.append(rs.getString("ExpTime"));
-    // sb.append(" ");
-    // sb.append(rs.getString("SpaceType"));
-    // sb.append(" ");
-    // sb.append(rs.getString("PermitType"));
-    // sb.append("\n");
-
-    // }
-    // System.out.println(sb.toString());
-    // } catch (SQLException e) {
-    // System.out.println("Error message");
-    // }
-    // }
-
     /**
      * Prompts the user to enter the ID of a driver and then retrieves and displays
      * the permit information
@@ -2498,37 +2378,7 @@ public class WolfParkingApplication {
         } catch (SQLException e) {
             System.out.println("Error message: " + e.getMessage());
         }
-        // finally {
-        // scnr.close();
-        // }
     }
-
-    // /**
-    // * Gets the number of available spaces within a particular Parking Lot
-    // *
-    // * @param LotName the name of the lot to find the number of available spaces
-    // for
-    // */
-    // public static void getAvailableSpaces(final String LotName, String SpaceType)
-    // {
-    // try {
-    // ResultSet rs = statement
-    // .executeQuery("SELECT SpaceNumber From Space WHERE spaceType = '" + SpaceType
-    // + "' AND
-    // lotName = '" + LotName
-    // + "' AND AvailabilityStatus = 'Available';");
-    // String s = "";
-    // StringBuilder sb = new StringBuilder(s);
-
-    // while (rs.next()) {
-    // sb.append(rs.getString("SpaceNumber"));
-    // sb.append("\n");
-    // }
-    // System.out.println(sb.toString());
-    // } catch (SQLException e) {
-    // System.out.println("Error message");
-    // }
-    // }
 
     /**
      * Prompts the user to enter the name of a parking lot and then retrieves and
@@ -2568,118 +2418,12 @@ public class WolfParkingApplication {
         } catch (SQLException e) {
             System.out.println("Error message: " + e.getMessage());
         }
-        // finally {
-        // scnr.close();
-        // }
     }
 
     private static void initialize() {
         try {
             connectToDatabase();
-
-            // // Creating Security table
-            // statement.executeUpdate(
-            // "CREATE TABLE Security (" + " SecurityID INTEGER," + " PRIMARY
-            // KEY
-            // (SecurityID)" + ");" );
-
-            // // Creating Driver table
-            // statement.executeUpdate(
-            // "CREATE TABLE Driver (" + " DriverID VARCHAR(20) NOT NULL," + "
-            // Name
-            // VARCHAR(36) NOT NULL,"
-            // + " Status VARCHAR(1) NOT NULL CHECK (Status IN ('S', 'E',
-            // 'V'))," + " PRIMARY KEY (DriverID)" +
-            // ");" );
-
-            // // Creating ParkingLot table
-            // statement.executeUpdate( "CREATE TABLE ParkingLot (" + " LotName
-            // VARCHAR(128)
-            // NOT NULL,"
-            // + " Address VARCHAR(128) NOT NULL," + " PRIMARY KEY (LotName)" +
-            // ");" );
-
-            // // Creating Vehicle table
-            // statement.executeUpdate( "CREATE TABLE Vehicle (" + " LicenseNum
-            // VARCHAR(128)
-            // NOT NULL,"
-            // + " Year VARCHAR(4)," + " Model VARCHAR(20)," + " Color
-            // VARCHAR(20),"
-            // + " Manf VARCHAR(20)," + " PRIMARY KEY (LicenseNum)" + ");" );
-
-            // // Creating Zone table
-            // statement.executeUpdate( "CREATE TABLE Zone (" + " ZoneID
-            // VARCHAR(2) NOT
-            // NULL CHECK (ZoneID IN ('A', 'B', 'C', 'D', 'AS', 'BS', 'CS',
-            // 'DS', 'V')),"
-            // + " LotName VARCHAR(128) NOT NULL," + " PRIMARY KEY (ZoneID,
-            // LotName),"
-            // + " FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON
-            // UPDATE CASCADE" +
-            // ");" );
-
-            // // Creating Space table
-            // statement.executeUpdate( "CREATE TABLE Space (" + " SpaceNumber
-            // INTEGER NOT
-            // NULL,"
-            // + " LotName VARCHAR(128) NOT NULL," + " SpaceType VARCHAR(20) NOT
-            // NULL CHECK (SpaceType IN ('electric', 'handicap', 'compact car',
-            // 'regular')),"
-            // + " AvailabilityStatus VARCHAR(20) NOT NULL CHECK (AvailabilityStatus IN
-            // ('available', 'occupied'))," + " PRIMARY KEY
-            // (SpaceNumber,
-            // LotName),"
-            // + " FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON
-            // UPDATE CASCADE" +
-            // ");" );
-
-            // // Creating Permit table
-            // statement.executeUpdate( "CREATE TABLE Permit (" + " PermitID
-            // INTEGER NOT
-            // NULL,"
-            // + " DriverID VARCHAR(20) NOT NULL, LicenseNum VARCHAR(20) NOT
-            // NULL, ZoneID
-            // VARCHAR(2) NOT NULL, LotName VARCHAR(20),"
-            // + " StartDate DATE NOT NULL," + " ExpDate DATE NOT NULL," + "
-            // ExpTime TIME
-            // NOT NULL,"
-            // + " SpaceType VARCHAR(20) NOT NULL," + " PermitType VARCHAR(20)
-            // NOT NULL CHECK (PermitType IN ('residential', 'commuter', 'peak
-            // hours', 'special event, 'Park & Ride')),"
-            // + " PRIMARY KEY (PermitID),"
-            // + " FOREIGN KEY(DriverID) REFERENCES Driver (DriverID) ON UPDATE
-            // CASCADE ON
-            // DELETE CASCADE,"
-            // + " FOREIGN KEY(LicenseNum) REFERENCES Vehicle (LicenseNum) ON
-            // UPDATE CASCADE
-            // ON DELETE CASCADE,"
-            // + "FOREIGN KEY (lotName, ZoneID) REFERENCES Lots(lotName, ZoneID) ON
-            // UPDATE
-            // CASCADE ON DELETE
-            // CASCADE"
-            // + ");" );
-
-            // Creating Citation table
-            // statement.executeUpdate( "CREATE TABLE Citation ("
-            // + "CitationNumber VARCHAR(32) NOT NULL, LotName VARCHAR(128) NOT
-            // NULL, LicenseNum
-            // VARCHAR(128) NOT NULL,"
-            // + "CitationDate DATE NOT NULL, Fee DOUBLE,"
-            // + "PaymentStatus VARCHAR(32) NOT NULL CHECK (PaymentStatus IN ('paid',
-            // 'unpaid', 'in appeal'), CitationTime TIME NOT
-            // NULL,"
-            // + "Category VARCHAR(128) NOT NULL,CHECK ((Category = 'Invalid
-            // Permit' AND Fee = 25) OR(Category = 'Expired Permit' AND Fee =
-            // 30) OR (Category = 'No Permit' AND Fee = 40) OR (Category =
-            // 'Invalid
-            // Permit' AND Fee = 12.5) OR(Category = 'Expired Permit' AND Fee =
-            // 15) OR (Category = 'No Permit' AND Fee = 20))," + "PRIMARY
-            // KEY(CitationNumber),"
-            // + "FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON UPDATE
-            // CASCADE,"
-            // + "FOREIGN KEY(LicenseNum) REFERENCES Vehicle (LicenseNum) ON
-            // UPDATE CASCADE"
-            // + ");" );
+            // createAllTables();
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -2691,8 +2435,8 @@ public class WolfParkingApplication {
     private static void connectToDatabase() throws ClassNotFoundException, SQLException {
         Class.forName("org.mariadb.jdbc.Driver");
 
-        String user = "stithi";
-        String password = "200475434";
+        String user = "oapatel2";
+        String password = "200404428";
 
         connection = DriverManager.getConnection(jdbcURL, user, password);
         statement = connection.createStatement();
@@ -2725,26 +2469,24 @@ public class WolfParkingApplication {
 
     private static void preloadDemoData() {
         try {
-            statement.executeUpdate("drop database stithi;");
-            statement.executeUpdate("create database stithi;");
-            statement.executeUpdate("use stithi;");
+            statement.executeUpdate("drop schema oapatel2;");
+            statement.executeUpdate("create schema oapatel2;");
+            statement.executeUpdate("use oapatel2;");
         } catch (SQLException e) {
             System.out.println("Error message");
         }
 
         createAllTables();
-        // populateTables();
+        populateTables();
     }
 
     private static void createAllTables() {
-        // Creating Security table
-        try {
-            statement.executeUpdate(
-                    "CREATE TABLE Security (" + " SecurityID INTEGER," + " PRIMARY KEY (SecurityID)" + ");");
 
+        try {
             // Creating Driver table
             statement.executeUpdate("CREATE TABLE Driver (" + " DriverID VARCHAR(20) NOT NULL,"
-                    + "Name VARCHAR(36) NOT NULL," + " Status VARCHAR(1) NOT NULL," + " PRIMARY KEY (DriverID)" + ");");
+                    + "Name VARCHAR(36) NOT NULL," + " Status VARCHAR(1) NOT NULL CHECK (Status IN ('S', 'E', 'V')),"
+                    + " PRIMARY KEY (DriverID)" + ");");
 
             // Creating ParkingLot table
             statement.executeUpdate("CREATE TABLE ParkingLot (" + " LotName VARCHAR(128) NOT NULL,"
@@ -2756,146 +2498,149 @@ public class WolfParkingApplication {
                     + " PRIMARY KEY (LicenseNum)" + ");");
 
             // Creating Zone table
-            statement.executeUpdate("CREATE TABLE Zone (" + " ZoneID VARCHAR(2) NOT NULL,"
+            statement.executeUpdate("CREATE TABLE Zone ("
+                    + " ZoneID VARCHAR(2) NOT NULL CHECK (ZoneID IN ('A', 'B', 'C', 'D', 'AS', 'BS', 'CS', 'DS', 'V')),"
                     + " LotName VARCHAR(128) NOT NULL," + " PRIMARY KEY (ZoneID, LotName),"
                     + " FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON UPDATE CASCADE" + ");");
 
             // Creating Space table
             statement.executeUpdate("CREATE TABLE Space (" + " SpaceNumber INTEGER NOT NULL,"
-                    + " LotName VARCHAR(128) NOT NULL," + " SpaceType VARCHAR(20) NOT NULL,"
-                    + " AvailabilityStatus VARCHAR(20) NOT NULL," + " PRIMARY KEY (SpaceNumber, LotName),"
+                    + " LotName VARCHAR(128) NOT NULL,"
+                    + " SpaceType VARCHAR(20) NOT NULL CHECK (SpaceType IN ('electric', 'handicap', 'compact car', 'regular')),"
+                    + " AvailabilityStatus VARCHAR(20) NOT NULL CHECK (AvailabilityStatus IN ('available', 'occupied')),"
+                    + " PRIMARY KEY (SpaceNumber, LotName),"
                     + " FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON UPDATE CASCADE" + ");");
 
             // Creating Permit table
             statement.executeUpdate("CREATE TABLE Permit (" + " PermitID VARCHAR(20) NOT NULL,"
                     + " DriverID VARCHAR(20) NOT NULL, LicenseNum VARCHAR(20) NOT NULL, ZoneID VARCHAR(2) NOT NULL, LotName VARCHAR(20),"
                     + " StartDate DATE NOT NULL," + " ExpDate DATE NOT NULL," + " ExpTime TIME NOT NULL,"
-                    + " SpaceType VARCHAR(20) NOT NULL," + " PermitType VARCHAR(20) NOT NULL,"
+                    + " SpaceType VARCHAR(20) NOT NULL,"
+                    + " PermitType VARCHAR(20) NOT NULL CHECK (PermitType IN ('residential', 'commuter', 'peak hours', 'special event, 'Park & Ride')),"
                     + " PRIMARY KEY (PermitID),"
                     + " FOREIGN KEY(DriverID) REFERENCES Driver (DriverID) ON UPDATE CASCADE ON DELETE CASCADE,"
                     + " FOREIGN KEY(LicenseNum) REFERENCES Vehicle (LicenseNum) ON UPDATE CASCADE ON DELETE CASCADE,"
-                    + " FOREIGN KEY(ZoneID) REFERENCES Zone (ZoneID) ON UPDATE CASCADE ON DELETE CASCADE"
-                    // + " FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName)
-                    // ON UPDATE CASCADE ON
-                    // DELETE CASCADE" // CHECK
+                    + "FOREIGN KEY (LotName, ZoneID) REFERENCES Zone(LotName, ZoneID) ON UPDATE CASCADE ON DELETE CASCADE"
                     + ");");
 
             // Creating Citation table
-            statement.executeUpdate("CREATE TABLE Citation ("
-                    + "CitationNumber VARCHAR(32) NOT NULL, LotName VARCHAR(128) NOT NULL, LicenseNum VARCHAR(128) NOT NULL,"
-                    + "CitationDate DATE NOT NULL, Fee DOUBLE,"
-                    + "PaymentStatus VARCHAR(32) NOT NULL, CitationTime TIME NOT NULL,"
-                    + "Category VARCHAR(128) NOT NULL, PRIMARY KEY(CitationNumber),"
-                    + "FOREIGN KEY(LotName) REFERENCES ParkingLot (LotName) ON UPDATE CASCADE,"
-                    + "FOREIGN KEY(LicenseNum) REFERENCES Vehicle (LicenseNum) ON UPDATE CASCADE" + ");");
+            statement.executeUpdate(
+                    "CREATE TABLE Citation (" +
+                            "CitationNumber VARCHAR(32) NOT NULL, " +
+                            "LotName VARCHAR(128) NOT NULL, " +
+                            // "ZoneID VARCHAR(2) NOT NULL, " +
+                            // " SpaceType VARCHAR(20) NOT NULL CHECK (SpaceType IN ('electric', 'handicap',
+                            // 'compact car', 'regular'))," +
+                            "LicenseNum VARCHAR(128) NOT NULL, " +
+                            "CitationDate DATE NOT NULL, " +
+                            "Fee DOUBLE, " +
+                            "PaymentStatus VARCHAR(32) NOT NULL CHECK (PaymentStatus IN ('paid', 'unpaid', 'in appeal')), "
+                            +
+                            "CitationTime TIME NOT NULL, " +
+                            "Category VARCHAR(128) NOT NULL, " +
+                            "CHECK ((Category = 'Invalid Permit' AND Fee = 25) OR " +
+                            "(Category = 'Expired Permit' AND Fee = 30) OR " +
+                            "(Category = 'No Permit' AND Fee = 40) OR " +
+                            "(Category = 'Invalid Permit' AND Fee = 12.5) OR " +
+                            "(Category = 'Expired Permit' AND Fee = 15) OR " +
+                            "(Category = 'No Permit' AND Fee = 20)), " +
+                            "PRIMARY KEY (CitationNumber), " +
+                            "FOREIGN KEY (LotName) REFERENCES ParkingLot (LotName) ON UPDATE ON DELETE CASCADE," +
+                            // "FOREIGN KEY (LotName, ZoneID) REFERENCES Zone (LotName, ZoneID) ON UPDATE
+                            // CASCADE ON DELETE CASCADE, " +
+                            "FOREIGN KEY (LicenseNum) REFERENCES Vehicle (LicenseNum) ON UPDATE CASCADE ON DELETE CASCADE"
+                            +
+                            ");");
 
-            // // Creating Maintain table
-            // statement.executeUpdate( "CREATE TABLE Maintain (" + "
-            // CitationNumber INTEGER
-            // NOT NULL,"
-            // + " SecurityID INTEGER NOT NULL," + " PRIMARY KEY
-            // (CitationNumber,
-            // SecurityID),"
-            // + " FOREIGN KEY(CitationNumber) REFERENCES Citation
-            // (CitationNumber) ON
-            // UPDATE CASCADE,"
-            // + " FOREIGN KEY(SecurityID) REFERENCES Security (SecurityID) ON
-            // UPDATE
-            // CASCADE" + ");" );
         } catch (SQLException e) {
             System.out.println("Error message");
         }
     }
 
-    // private static void populateTables() {
-    // enterSecurity(1);
-    // enterSecurity(2);
-    // enterSecurity(3);
+    private static void populateTables() {
 
-    // enterDriver("7729119111", "V", "Sam BankmanFried");
-    // enterDriver("266399121", "E", "John Clay");
-    // enterDriver("366399121", "E", "Julia Hicks");
-    // enterDriver("466399121", "E", "Ivan Garcia");
-    // enterDriver("122765234", "S", "Sachin Tendulkar");
-    // enterDriver("9194789124", "V", "Charles Xavier");
+        enterDriver("7729119111", "V", "Sam BankmanFried");
+        enterDriver("266399121", "E", "John Clay");
+        enterDriver("366399121", "E", "Julia Hicks");
+        enterDriver("466399121", "E", "Ivan Garcia");
+        enterDriver("122765234", "S", "Sachin Tendulkar");
+        enterDriver("9194789124", "V", "Charles Xavier");
 
-    // enterLot("Poulton Deck", "1021 Main Campus Dr, Raleigh, NC, 27606");
-    // enterLot("Poulton Lot", "1021 Main Campus Dr, Raleigh, NC, 27606");
-    // enterLot("Partners Way Deck", "851 Partners Way, Raleigh, NC, 27606");
-    // enterLot("Dan Allen Parking Deck", "110 Dan Allen Dr, Raleigh, NC, 27607");
+        enterLot("Poulton Deck", "1021 Main Campus Dr, Raleigh, NC, 27606");
+        enterLot("Poulton Lot", "1021 Main Campus Dr, Raleigh, NC, 27606");
+        enterLot("Partners Way Deck", "851 Partners Way, Raleigh, NC, 27606");
+        enterLot("Dan Allen Parking Deck", "110 Dan Allen Dr, Raleigh, NC, 27607");
 
-    // enterVehicle("SBF", "2024", "GT-R-Nismo", "Pearl White TriCoat", "Nissan");
-    // enterVehicle("Clay1", "2023", "Model S", "Ultra Red", "Tesla");
-    // enterVehicle("Hicks1", "2024", "M2 Coupe", "Zandvoort Blue", "BMW");
-    // enterVehicle("Garcia1", "2024", "Continental GT Speed", "Blue Fusion",
-    // "Bentley");
-    // enterVehicle("CRICKET", "2024", "Civic SI", "Sonic Gray Pearl", "Honda");
-    // enterVehicle("PROFX", "2024", "Taycan Sport Turismo", "Frozenblue Metallic",
-    // "Porsche");
-    // // dummy extra data
-    // enterVehicle("VAN-9910", null, "Macan GTS", "Papaya Metallic", null);
+        enterVehicle("SBF", "2024", "GT-R-Nismo", "Pearl White TriCoat", "Nissan");
+        enterVehicle("Clay1", "2023", "Model S", "Ultra Red", "Tesla");
+        enterVehicle("Hicks1", "2024", "M2 Coupe", "Zandvoort Blue", "BMW");
+        enterVehicle("Garcia1", "2024", "Continental GT Speed", "Blue Fusion",
+                "Bentley");
+        enterVehicle("CRICKET", "2024", "Civic SI", "Sonic Gray Pearl", "Honda");
+        enterVehicle("PROFX", "2024", "Taycan Sport Turismo", "Frozenblue Metallic",
+                "Porsche");
+        // dummy extra data
+        enterVehicle("VAN-9910", null, "Macan GTS", "Papaya Metallic", null);
 
-    // // zones
-    // enterZone("V", "Poulton Deck");
-    // enterZone("A", "Partners Way Deck");
-    // enterZone("AS", "Dan Allen Parking Deck");
+        // zones
+        enterZone("V", "Poulton Deck");
+        enterZone("A", "Partners Way Deck");
+        enterZone("AS", "Dan Allen Parking Deck");
 
-    // // spaces
-    // enterSpace(1, "Poulton Deck", "regular", "available");
-    // enterSpace(2, "Partners Way Deck", "compact car", "not available");
-    // enterSpace(3, "Dan Allen Parking Deck", "electric", "available");
+        // spaces
+        // enterSpace(1, "Poulton Deck", "regular", "available");
+        // enterSpace(2, "Partners Way Deck", "compact car", "not available");
+        // enterSpace(3, "Dan Allen Parking Deck", "electric", "available");
 
-    // // LOT NAME MIGHT NEED TO GO IN HERE
-    // // enterPermitInfo( "VSBF1C", "Commuter", "V", "Poulton Deck",
-    // // "7729119111", "SBF", "Regular", "2023-01-01",
-    // // "2024-01-01", "06:00:00" );
-    // // enterPermitInfo( "EJC1R", "Residential", "A", "Partners Way Deck",
-    // // "266399121", "Clay1", "Electric",
-    // // "2010-01-01", "2030-01-01", "06:00:00" );
-    // // enterPermitInfo( "EJH2C", "Commuter", "A", "Partners Way Deck",
-    // // "366399121", "Hicks1", "Regular", "2023-01-01",
-    // // "2024-01-01", "06:00:00" );
-    // // enterPermitInfo( "EIG3C", "Commuter", "A", "Partners Way Deck",
-    // // "466399121", "Garcia1", "Regular", "2023-01-01",
-    // // "2024-01-01", "06:00:00" );
-    // // enterPermitInfo( "SST1R", "Residential", "AS", "Dan Allen Parking
-    // // Deck", "122765234", "CRICKET", "Compact Car",
-    // // "2022-01-01", "2023-09-30", "06:00:00" );
-    // // enterPermitInfo( "VCX1SE", "Special event", "V", "Poulton Deck",
-    // // "9194789124", "PROFX", "Handicap",
-    // // "2023-01-01", "2023-11-15", "06:00:00" );
+        // LOT NAME MIGHT NEED TO GO IN HERE
+        enterPermitInfo("VSBF1C", "Commuter", "V", "Poulton Deck",
+                "7729119111", "SBF", "Regular", "2023-01-01",
+                "2024-01-01", "06:00:00");
+        enterPermitInfo("EJC1R", "Residential", "A", "Partners Way Deck",
+                "266399121", "Clay1", "Electric",
+                "2010-01-01", "2030-01-01", "06:00:00");
+        enterPermitInfo("EJH2C", "Commuter", "A", "Partners Way Deck",
+                "366399121", "Hicks1", "Regular", "2023-01-01",
+                "2024-01-01", "06:00:00");
+        enterPermitInfo("EIG3C", "Commuter", "A", "Partners Way Deck",
+                "466399121", "Garcia1", "Regular", "2023-01-01",
+                "2024-01-01", "06:00:00");
+        enterPermitInfo("SST1R", "Residential", "AS", "Dan Allen Parking Deck", "122765234", "CRICKET", "Compact Car",
+                "2022-01-01", "2023-09-30", "06:00:00");
+        enterPermitInfo("VCX1SE", "Special event", "V", "Poulton Deck",
+                "9194789124", "PROFX", "Handicap",
+                "2023-01-01", "2023-11-15", "06:00:00");
 
-    // // CHANGE LATER
-    // enterPermitInfo("VSBF1C", "Commuter", "V", null, "7729119111", "SBF",
-    // "Regular", "2023-01-01", "2024-01-01",
-    // "06:00:00");
-    // enterPermitInfo("EJC1R", "Residential", "A", null, "266399121", "Clay1",
-    // "Electric", "2010-01-01", "2030-01-01",
-    // "06:00:00");
-    // enterPermitInfo("EJH2C", "Commuter", "A", null, "366399121", "Hicks1",
-    // "Regular", "2023-01-01", "2024-01-01",
-    // "06:00:00");
-    // enterPermitInfo("EIG3C", "Commuter", "A", null, "466399121", "Garcia1",
-    // "Regular", "2023-01-01", "2024-01-01",
-    // "06:00:00");
-    // enterPermitInfo("SST1R", "Residential", "AS", null, "122765234", "CRICKET",
-    // "Compact Car", "2022-01-01",
-    // "2023-09-30", "06:00:00");
-    // enterPermitInfo("VCX1SE", "Special event", "V", null, "9194789124", "PROFX",
-    // "Handicap", "2023-01-01",
-    // "2023-11-15", "06:00:00");
+        // // CHANGE LATER
+        // enterPermitInfo("VSBF1C", "Commuter", "V", null, "7729119111", "SBF",
+        // "Regular", "2023-01-01", "2024-01-01",
+        // "06:00:00");
+        // enterPermitInfo("EJC1R", "Residential", "A", null, "266399121", "Clay1",
+        // "Electric", "2010-01-01", "2030-01-01",
+        // "06:00:00");
+        // enterPermitInfo("EJH2C", "Commuter", "A", null, "366399121", "Hicks1",
+        // "Regular", "2023-01-01", "2024-01-01",
+        // "06:00:00");
+        // enterPermitInfo("EIG3C", "Commuter", "A", null, "466399121", "Garcia1",
+        // "Regular", "2023-01-01", "2024-01-01",
+        // "06:00:00");
+        // enterPermitInfo("SST1R", "Residential", "AS", null, "122765234", "CRICKET",
+        // "Compact Car", "2022-01-01",
+        // "2023-09-30", "06:00:00");
+        // enterPermitInfo("VCX1SE", "Special event", "V", null, "9194789124", "PROFX",
+        // "Handicap", "2023-01-01",
+        // "2023-11-15", "06:00:00");
 
-    // // CITATION
-    // enterCitation("2024-01-01", 40, "PAID", "08:00:00", "NP1", "No Permit", "Dan
-    // Allen Parking Deck", "VAN-9910");
-    // enterCitation("2023-10-01", 30, "DUE", "08:00:00", "EP1", "Expired Permit",
-    // "Poulton Lot", "CRICKET"); // "Poulton
-    // // Lot"
-    // // or
-    // // "Poulton
-    // // Deck"
+        // CITATION
+        enterCitation("2024-01-01", "PAID", "08:00:00", "NP1", "No Permit", "Dan Allen Parking Deck", "VAN-9910");
+        enterCitation("2023-10-01", "DUE", "08:00:00", "EP1", "Expired Permit",
+                "Poulton Lot", "CRICKET"); // "Poulton
+        // Lot"
+        // or
+        // "Poulton
+        // Deck"
 
-    // }
+    }
 
 }
 
